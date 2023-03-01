@@ -1,0 +1,19 @@
+spring:
+  main:
+    web-application-type: none
+    banner-mode: off
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:~/.movieChecker/favoritesdb
+    #url: jdbc:hsqldb:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: 
+  h2:
+    console.enabled: false
+    #http://localhost:8080/h2-console
+    #http://localhost:8082

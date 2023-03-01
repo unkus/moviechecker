@@ -1,0 +1,3 @@
+rootProject.name = 'moviechecker'
+include('app', 'lib')
+include 'demo'
