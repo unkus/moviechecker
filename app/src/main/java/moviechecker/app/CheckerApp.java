@@ -7,9 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import moviechecker.repository.EpisodeRepository;
 import moviechecker.repository.FavoriteRepository;
-import moviechecker.repository.MovieRepository;
+import moviechecker.repository.SiteRepository;
 import moviechecker.view.MainView;
 
 @SpringBootApplication(scanBasePackages = "moviechecker")
@@ -19,37 +18,30 @@ public class CheckerApp implements ApplicationRunner {
 
 	@Autowired
 	private MainView view;
-	
+
 	@Autowired
 	private FavoriteRepository favorites;
-	
+
 	@Autowired
-	private MovieRepository movies;
-	
-	@Autowired
-	private EpisodeRepository episodes;
-	
+	private SiteRepository sites;
+
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		episodes.findAll().forEach(episode -> {
-			if (!favorites.existsByLastViewed(episode)) {
-				episodes.delete(episode);
-			}
-		});
-		
-		movies.findAll().forEach(movie -> {
-			if(!favorites.existsByMovie(movie)) {
-				movies.delete(movie);
-			}
-		});
-		
+		databaseCleanup();
+
 		javax.swing.SwingUtilities.invokeLater(() -> {
-            try {
-            	view.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+			view.setVisible(true);
+		});
 	}
 
+	private void databaseCleanup() {
+		sites.findAll().forEach(site -> {
+			site.getMovies().removeIf(movie -> !favorites.existsByMovie(movie));
+			if (site.getMovies().isEmpty()) {
+				sites.delete(site);
+			} else {
+				sites.save(site);
+			}
+		});
+	}
 }
