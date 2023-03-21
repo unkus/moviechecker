@@ -5,18 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import moviechecker.converter.UriPersistanceConverter;
 
 @Entity
@@ -35,7 +24,7 @@ public class Episode {
 	private int number;
 
 	@Column(nullable = false)
-	private String episode_title;
+	private String title;
 
 	@Column(nullable = false)
 	@Convert(converter = UriPersistanceConverter.class)
@@ -60,7 +49,12 @@ public class Episode {
 		this.season = season;
 		this.number = number;
 	}
-	
+
+	@Transient
+	public boolean isNew() {
+		return id == 0;
+	}
+
 	public Season getSeason() {
 		return season;
 	}
@@ -74,11 +68,11 @@ public class Episode {
 	}
 
 	public String getTitle() {
-		return episode_title;
+		return title;
 	}
 
 	public void setTitle(String title) {
-		this.episode_title = title;
+		this.title = title;
 	}
 
 	public URI getLink() {
@@ -107,7 +101,7 @@ public class Episode {
 
 	@Override
 	public String toString() {
-		return season + " " + episode_title + " " + releaseDate;
+		return season + " " + title + " " + releaseDate;
 	}
 
 	@Override
