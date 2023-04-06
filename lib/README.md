@@ -2,10 +2,11 @@
 Описание таблиц базы и поставщика данных.
 
 ## База данных
-База включает 4 таблицы: site, movie, episode, favorite.
+База включает 5 таблицы: site, movie, season, episode, favorite.
 Отношения:
 - один site ко многим movie
-- один movie ко многим episode
+- один movie ко многим season
+- один season ко многим episode
 - один favorite к одному movie
 - один favorite к одному episode
 
