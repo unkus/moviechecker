@@ -44,12 +44,12 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateAscTest() {
         assertNotNull(episodes);
 
-        Iterable<Episode> episodesIterable = episodes.findAllByStateOrderByReleaseDateAsc(State.EXPECTED);
+        Iterable<Episode> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
         List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
         List<Episode> sortedList = actualList.stream()
-                .sorted(Comparator.comparing(item -> item.getReleaseDate().orElse(null),
+                .sorted(Comparator.comparing(item -> item.getDate().orElse(null),
                         (left, right) -> left != null ? (right != null ? left.compareTo(right) : 1) : -1))
                 .toList();
 
@@ -60,12 +60,12 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateDescTest() {
         assertNotNull(episodes);
 
-        Iterable<Episode> episodesIterable = episodes.findAllByStateNotOrderByReleaseDateDesc(State.RELEASED);
+        Iterable<Episode> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
         List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
         List<Episode> sortedList = actualList.stream()
-                .sorted(Comparator.comparing(item -> item.getReleaseDate().orElse(null),
+                .sorted(Comparator.comparing(item -> item.getDate().orElse(null),
                         (left, right) -> (left != null ? (right != null ? left.compareTo(right) : 1) : -1) * -1))
                 .toList();
 

@@ -46,12 +46,12 @@ INSERT INTO season (movie_id, number, title, link)
     WHERE m.page_id = 'movie_one';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, link, state, release_date)
-    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.release_date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM ( VALUES
             (11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-05 12:35:29'),
             (12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-10 11:21:29')
-        ) tmp (number, title, link, state, release_date)
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_one'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.one';
@@ -70,13 +70,13 @@ INSERT INTO season (movie_id, number, title, link)
     WHERE m.page_id = 'movie_two';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, link, state, release_date)
-    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.release_date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM
         ( VALUES
             (24, 'Серия 24', '/movie_two/2/24.html', 2, TIMESTAMP '2023-01-08 12:35:29'),
             (25, 'Серия 25', '/movie_two/2/25.html', 1, TIMESTAMP '2023-01-09 13:23:16')
-        ) tmp (number, title, link, state, release_date)
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 2
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_two'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.one';
@@ -115,12 +115,12 @@ INSERT INTO season (movie_id, number, title, link)
     WHERE m.page_id = 'movie_one';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, link, state, release_date)
-    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.release_date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM ( VALUES
             (11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-06 13:35:29'),
             (12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-11 12:21:29')
-        ) tmp (number, title, link, state, release_date)
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_one'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.two';
@@ -139,13 +139,13 @@ INSERT INTO season (movie_id, number, title, link)
     WHERE m.page_id = 'movie_three';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, link, state, release_date)
-    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.release_date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM
         ( VALUES
             (1, 'Серия 1', '/movie_three/1/1.html', 1, TIMESTAMP '2023-01-06 18:33:41'),
             (2, 'Серия 2', '/movie_three/1/2.html', 0, NULL)
-        ) tmp (number, title, link, state, release_date)
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_three'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.two';

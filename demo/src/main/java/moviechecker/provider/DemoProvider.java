@@ -124,14 +124,14 @@ public class DemoProvider extends AbstractMovieProvider {
 							localDate = LocalDate.now().minusDays(1);
 							break;
 						default:
-							episode.setState(State.RELEASED);
-							localDate = LocalDate.parse(date, dateFormat);
-						}
-						String time = dateMatcher.group("time");
-						if (time != null) {
-							episode.setReleaseDate(LocalDateTime.of(localDate, LocalTime.parse(time)));
-						}
-					}
+                            episode.setState(State.RELEASED);
+                            localDate = LocalDate.parse(date, dateFormat);
+                        }
+                    String time = dateMatcher.group("time");
+                    if (time != null) {
+                        episode.setDate(LocalDateTime.of(localDate, LocalTime.parse(time)));
+                    }
+                }
 
 					episodes.save(episode);
 				}

@@ -31,7 +31,6 @@ import moviechecker.model.FavoriteMovie;
 import moviechecker.model.State;
 import moviechecker.repository.EpisodeRepository;
 import moviechecker.repository.FavoriteRepository;
-import java.awt.FlowLayout;
 
 @Component
 public class MainView extends JFrame {
@@ -119,12 +118,12 @@ public class MainView extends JFrame {
 	@EventListener
 	public void handleDataReceive(DataReceivedEvent event) {
 		latestPanel.removeAll();
-		episodes.findAllByStateNotOrderByReleaseDateDesc(State.EXPECTED).forEach(episode -> {
+		episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
 			latestPanel.add(new LatestEpisodeView(episode, episodeViewController));
 		});
 
 		expectedPanel.removeAll();
-		episodes.findAllByStateOrderByReleaseDateAsc(State.EXPECTED).forEach(episode -> {
+		episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
 			expectedPanel.add(new ExpectedEpisodeView(episode, episodeViewController));
 		});
 
@@ -147,7 +146,7 @@ public class MainView extends JFrame {
 //		
 //		Stream.of(favoritesPanel.getComponents()).forEach(comp -> {
 //			if(comp instanceof FavoriteView) {
-//				// TODO: найти у далить нужный
+//				// TODO: найти удалить нужный
 //				// TODO: убрать флаг
 //			}
 //		});

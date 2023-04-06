@@ -15,15 +15,13 @@ import javax.swing.border.EtchedBorder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import moviechecker.controller.EpisodeViewController;
 import moviechecker.model.Episode;
 
 public class ExpectedEpisodeView extends JPanel {
 
-	private Logger logger = LoggerFactory.getLogger(ExpectedEpisodeView.class);
+	private final Logger logger = LoggerFactory.getLogger(ExpectedEpisodeView.class);
 
 	public ExpectedEpisodeView(final Episode episode, EpisodeViewController controller) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -58,7 +56,7 @@ public class ExpectedEpisodeView extends JPanel {
 		JLabel dateLabel = new JLabel("Нестабильно");
 		titlePanel.add(dateLabel, BorderLayout.EAST);
 
-		episode.getReleaseDate().ifPresent(date -> {
+		episode.getDate().ifPresent(date -> {
 			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
 				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Сегодня HH:mm")));
 			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {

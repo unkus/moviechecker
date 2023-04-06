@@ -2,8 +2,6 @@ package moviechecker.view;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,7 +65,7 @@ public class LatestEpisodeView extends JPanel {
 		dateLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		titlePanel.add(dateLabel, BorderLayout.EAST);
 		
-		episode.getReleaseDate().ifPresent(date -> {
+		episode.getDate().ifPresent(date -> {
 			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
 				dateLabel.setText(date.format(todayFormat));
 			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {

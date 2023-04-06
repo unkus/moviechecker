@@ -34,8 +34,8 @@ public class Episode {
 	@Enumerated(EnumType.ORDINAL)
 	private State state = State.EXPECTED;
 
-	@Column(name = "release_date", columnDefinition = "TIMESTAMP")
-	private LocalDateTime releaseDate;
+	@Column(name = "date", columnDefinition = "TIMESTAMP")
+	private LocalDateTime date;
 
 	/**
 	 * @deprecated Only for hibernate usage.
@@ -91,17 +91,17 @@ public class Episode {
 		this.state = state;
 	}
 
-	public Optional<LocalDateTime> getReleaseDate() {
-		return Optional.ofNullable(releaseDate);
+	public Optional<LocalDateTime> getDate() {
+		return Optional.ofNullable(date);
 	}
 
-	public void setReleaseDate(LocalDateTime releaseDate) {
-		this.releaseDate = releaseDate;
+	public void setDate(LocalDateTime date) {
+		this.date = date;
 	}
 
 	@Override
 	public String toString() {
-		return season + " " + title + " " + releaseDate;
+		return season + " " + title + " " + date;
 	}
 
 	@Override
