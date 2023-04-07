@@ -6,13 +6,14 @@ import org.springframework.context.ApplicationEventPublisher;
 import moviechecker.event.DataErrorEvent;
 import moviechecker.event.DataReceivedEvent;
 import moviechecker.event.DataRequestedEvent;
+import org.springframework.context.event.EventListener;
 
 public abstract class AbstractMovieProvider implements MovieProvider {
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
+	private @Autowired ApplicationEventPublisher applicationEventPublisher;
 
-	public void handleDataRequest(DataRequestedEvent event) {
+	@EventListener
+	public final void handleDataRequest(DataRequestedEvent event) {
 		try {
 			retrieveData();
 			applicationEventPublisher.publishEvent(new DataReceivedEvent(this));
