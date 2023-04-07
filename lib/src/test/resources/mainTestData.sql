@@ -1,12 +1,12 @@
 -- 'https://site.one'
 --
 -- 'movie_one', 'Фильм первый', '/movie_one.html'
--- 1, '1', '/1.html'
+-- 1
 -- 11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-05 12:35:29'
 -- 12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-10 11:21:29'
 --
 -- 'movie_two', 'Фильм второй', '/movie_two.html'
--- 2, '2', '/2.html'
+-- 2
 -- 24, 'Серия 24', '/movie_two/2/24.html', 2, TIMESTAMP '2023-01-08 12:35:29'
 -- 25, 'Серия 25', '/movie_two/2/25.html', 1, TIMESTAMP '2023-01-09 13:23:16'
 --
@@ -17,12 +17,12 @@
 -- 'https://site.two'
 --
 -- 'movie_one', 'Фильм первый', '/movie_one.html'
--- 1, '1', '/1.html'
+-- 1
 -- 11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-06 13:35:29'
 -- 12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-11 12:21:29'
 --
 -- 'movie_three', 'Фильм третий', '/movie_three.html'
--- 1, '1', '/1.html'
+-- 1
 -- 1, 'Серия 1', '/movie_three/1/1.html', 1, TIMESTAMP '2023-01-06 18:33:41'
 -- 2, 'Серия 2', '/movie_three/1/2.html', 0'
 --
@@ -39,8 +39,8 @@ INSERT INTO movie (site_id, page_id, title, link)
     WHERE s.address = 'https://site.one';
 
 -- season 1
-INSERT INTO season (movie_id, number, title, link)
-    SELECT m.id, 1, '1', '/1.html'
+INSERT INTO season (movie_id, number)
+    SELECT m.id, 1
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.one'
     WHERE m.page_id = 'movie_one';
@@ -63,8 +63,8 @@ INSERT INTO movie (site_id, page_id, title, link)
     WHERE s.address = 'https://site.one';
 
 -- season 2
-INSERT INTO season (movie_id, number, title, link)
-    SELECT m.id, 2, '2', '/2.html'
+INSERT INTO season (movie_id, number)
+    SELECT m.id, 2
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.one'
     WHERE m.page_id = 'movie_two';
@@ -108,8 +108,8 @@ INSERT INTO movie (site_id, page_id, title, link)
     WHERE s.address = 'https://site.two';
 
 -- season 1
-INSERT INTO season (movie_id, number, title, link)
-    SELECT m.id, 1, '1', '/1.html'
+INSERT INTO season (movie_id, number)
+    SELECT m.id, 1
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.two'
     WHERE m.page_id = 'movie_one';
@@ -132,8 +132,8 @@ INSERT INTO movie (site_id, page_id, title, link)
     WHERE s.address = 'https://site.two';
 
 -- season 1
-INSERT INTO season (movie_id, number, title, link)
-    SELECT m.id, 1, '1', '/1.html'
+INSERT INTO season (movie_id, number)
+    SELECT m.id, 1
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.two'
     WHERE m.page_id = 'movie_three';
