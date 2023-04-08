@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'application' // Для заупуска демострации. В конечном варианте поставщика данных эта строка не требуется.
 	id 'eclipse'
     id 'org.springframework.boot' version '3.0.2'
     id 'io.spring.dependency-management' version '1.1.0'
@@ -15,9 +16,13 @@ repositories {
 }
 
 dependencies {
-	implementation 'moviechecker:lib:0.0.1-SNAPSHOT'
-    implementation 'moviechecker:app:0.0.1-SNAPSHOT'
-    
+    // Используем project в зависимости для удобства - не надо публиковать основные модули для запуска демострации.
+    // Полноценный поставщик данных должен будет использовать репозиторий.
+    implementation project(':lib')
+    implementation project(':app')
+//	implementation 'moviechecker:lib:0.0.1-SNAPSHOT'
+//  implementation 'moviechecker:app:0.0.1-SNAPSHOT'
+
 	implementation 'org.springframework.boot:spring-boot-starter:3.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.2'
 
@@ -30,3 +35,6 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// Для заупуска демострации. В конечном варианте поставщика данных эта строка не требуется.
+mainClassName = 'moviechecker.CheckerMain'
