@@ -70,11 +70,9 @@ public class ExpectedEpisodeView extends JPanel {
 		add(actionPanel, BorderLayout.EAST);
 		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JButton openButton = new JButton("Серия " + episode.getTitle());
+		JButton openButton = new JButton(episode.getTitle());
 		actionPanel.add(openButton);
-		openButton.addActionListener(event -> {
-			controller.openInBrowser(episode);
-		});
+		openButton.addActionListener(event -> controller.openInBrowser(episode));
 	}
 
 }

@@ -37,16 +37,11 @@ public class FavoriteView extends JPanel {
 		
 		JButton openButton = new JButton("Открыть");
 		actionPanel.add(openButton);
-		openButton.addActionListener(event -> {
-			controller.openInBrowser(favorite);
-		});
+		openButton.addActionListener(event -> controller.openInBrowser(favorite));
 		
-		JButton removeButton = new JButton("Удалить");
+		JButton removeButton = new JButton("Забыть");
 		actionPanel.add(removeButton);
-		removeButton.addActionListener(event -> {
-			controller.removeFromFavorites(favorite);
-		});
-
+		removeButton.addActionListener(event -> controller.removeFromFavorites(favorite));
 	}
 
 }
