@@ -1,9 +1,6 @@
 package moviechecker.provider;
 
-import moviechecker.model.Episode;
-import moviechecker.model.Movie;
-import moviechecker.model.Season;
-import moviechecker.model.Site;
+import moviechecker.model.*;
 import moviechecker.repository.EpisodeRepository;
 import moviechecker.repository.MovieRepository;
 import moviechecker.repository.SeasonRepository;
@@ -51,7 +48,9 @@ public abstract class AbstractMovieProvider implements MovieProvider {
         Episode episode = episodes.findBySeasonAndNumber(season, record.episodeNumber()).orElse(new Episode(season, record.episodeNumber()));
         episode.setTitle(record.episodeTitle());
         episode.setLink(record.episodeLink());
-        episode.setState(record.episodeState());
+        if(episode.getState() != State.VIEWED) {
+            episode.setState(record.episodeState());
+        }
         episode.setDate(record.episodeDate());
         episodes.save(episode);
     }
