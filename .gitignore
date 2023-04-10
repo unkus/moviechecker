@@ -4,5 +4,10 @@
 # Ignore idea files
 .idea
 
+# Ignore Eclipse files
+.settings
+.project
+.classpath
+
 # Ignore Gradle build output directory
 build
