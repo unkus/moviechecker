@@ -28,10 +28,8 @@ public class ExpectedEpisodeView extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel flagPanel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) flagPanel.getLayout();
-		flowLayout.setAlignOnBaseline(true);
-		flowLayout.setAlignment(FlowLayout.LEFT);
 		add(flagPanel, BorderLayout.WEST);
+		flagPanel.setLayout(new BorderLayout(0, 0));
 
 		JCheckBox favoriteCheckBox = new JCheckBox();
 		flagPanel.add(favoriteCheckBox);
@@ -68,7 +66,7 @@ public class ExpectedEpisodeView extends JPanel {
 
 		JPanel actionPanel = new JPanel();
 		add(actionPanel, BorderLayout.EAST);
-		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		actionPanel.setLayout(new BorderLayout(0, 0));
 
 		JButton openButton = new JButton(episode.getTitle());
 		actionPanel.add(openButton);

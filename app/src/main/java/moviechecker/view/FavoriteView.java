@@ -16,31 +16,24 @@ public class FavoriteView extends JPanel {
 	public FavoriteView(final FavoriteMovie favorite, FavoriteViewController controller) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
-
-		JPanel flagPanel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) flagPanel.getLayout();
-		flowLayout.setAlignOnBaseline(true);
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		add(flagPanel, BorderLayout.WEST);
 		
 		JPanel titlePanel = new JPanel();
-		FlowLayout flowLayout_1 = (FlowLayout) titlePanel.getLayout();
-		flowLayout_1.setAlignment(FlowLayout.LEFT);
 		add(titlePanel, BorderLayout.CENTER);
+		titlePanel.setLayout(new BorderLayout(0, 0));
 
 		JLabel titleLabel = new JLabel(favorite.getMovie().getTitle());
 		titlePanel.add(titleLabel);
 
 		JPanel actionPanel = new JPanel();
 		add(actionPanel, BorderLayout.EAST);
-		actionPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		actionPanel.setLayout(new BorderLayout(0, 0));
 		
 		JButton openButton = new JButton("Открыть");
 		actionPanel.add(openButton);
 		openButton.addActionListener(event -> controller.openInBrowser(favorite));
 		
 		JButton removeButton = new JButton("Забыть");
-		actionPanel.add(removeButton);
+		actionPanel.add(removeButton, BorderLayout.EAST);
 		removeButton.addActionListener(event -> controller.removeFromFavorites(favorite));
 	}
 
