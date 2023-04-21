@@ -108,26 +108,31 @@ public class MainView extends JFrame {
 		actionPanel.add(checkButton);
 	}
 
+	private void updateView() {
+		episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
+			latestPanel.add(new LatestEpisodeView(episode, episodeViewController));
+		});
+		episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
+			expectedPanel.add(new ExpectedEpisodeView(episode, episodeViewController));
+		});
+		contentPane.validate();
+	}
+
 	@PostConstruct
 	public void postConstruct() {
 		favorites.findAll().forEach(favorite -> {
 			favoritesPanel.add(new FavoriteView(favorite, favoriteViewController));
 		});
+
+		updateView();
 	}
 	
 	@EventListener
 	public void handleDataReceive(DataReceivedEvent event) {
 		latestPanel.removeAll();
-		episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-			latestPanel.add(new LatestEpisodeView(episode, episodeViewController));
-		});
-
 		expectedPanel.removeAll();
-		episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
-			expectedPanel.add(new ExpectedEpisodeView(episode, episodeViewController));
-		});
 
-		contentPane.validate();
+		updateView();
 	}
 
 	@EventListener
