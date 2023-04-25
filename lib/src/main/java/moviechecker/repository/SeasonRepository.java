@@ -9,6 +9,6 @@ import moviechecker.model.Season;
 
 public interface SeasonRepository extends CrudRepository<Season, Long> {
 
-//	@Query("SELECT s FROM Season s WHERE e.movie = :movie and s.number = :number")
-	public Optional<Season> findByMovieAndNumber(Movie movie, int number);
+//	@Query("SELECT s FROM Season s WHERE s.movie = :movie and s.number = :number")
+	Optional<Season> findByMovieAndNumber(Movie movie, int number);
 }

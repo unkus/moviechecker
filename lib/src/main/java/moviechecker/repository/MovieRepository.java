@@ -10,6 +10,6 @@ import moviechecker.model.Site;
 public interface MovieRepository extends CrudRepository<Movie, Long> {
 
 //	@Query("SELECT m FROM Movie m WHERE m.site = :site AND m.pageId = :pageId")
-	public Optional<Movie> findBySiteAndPageId(Site site, String pageId);
+	Optional<Movie> findBySiteAndPageId(Site site, String pageId);
 
 }

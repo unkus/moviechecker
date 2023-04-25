@@ -10,5 +10,5 @@ import moviechecker.model.Site;
 public interface SiteRepository extends CrudRepository<Site, Long> {
 
 //	@Query("SELECT s FROM Site s WHERE s.address = :address")
-	public Optional<Site> findByAddress(URI address);
+	Optional<Site> findByAddress(URI address);
 }
