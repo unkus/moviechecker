@@ -13,8 +13,10 @@ import moviechecker.event.DataReceivedEvent;
 import moviechecker.event.DataRequestedEvent;
 import org.springframework.context.event.EventListener;
 
-public abstract class AbstractMovieProvider implements MovieProvider {
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+public abstract class AbstractMovieProvider implements MovieProvider {
 
     private @Autowired ApplicationEventPublisher applicationEventPublisher;
 
@@ -23,17 +25,27 @@ public abstract class AbstractMovieProvider implements MovieProvider {
     private @Autowired SeasonRepository seasons;
     private @Autowired EpisodeRepository episodes;
 
+    private final ExecutorService dataRetrievalExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService recordSavingExecutor = Executors.newSingleThreadExecutor();
+
     @EventListener
     public final void handleDataRequest(DataRequestedEvent event) {
-        try {
-            retrieveData();
-            applicationEventPublisher.publishEvent(new DataReceivedEvent(this));
-        } catch (Exception e) {
-            applicationEventPublisher.publishEvent(new DataErrorEvent(e));
-        }
+        dataRetrievalExecutor.submit(()-> {
+            try {
+                retrieveData();
+                applicationEventPublisher.publishEvent(new DataReceivedEvent(this));
+            } catch (Exception e) {
+                applicationEventPublisher.publishEvent(new DataErrorEvent(e));
+            }
+        });
     }
 
-    public final void saveRecord(DataRecord record) {
+    /**
+     * Apply the data from the record to the database.
+     *
+     * @param record - data to be saved in the database
+     */
+    protected final void saveRecord(DataRecord record) {
         Site site = sites.findByAddress(record.siteAddress()).orElse(new Site(record.siteAddress()));
         sites.save(site);
 
@@ -48,7 +60,7 @@ public abstract class AbstractMovieProvider implements MovieProvider {
         Episode episode = episodes.findBySeasonAndNumber(season, record.episodeNumber()).orElse(new Episode(season, record.episodeNumber()));
         episode.setTitle(record.episodeTitle());
         episode.setLink(record.episodeLink());
-        if(episode.getState() != State.VIEWED) {
+        if (episode.getState() != State.VIEWED) {
             episode.setState(record.episodeState());
         }
         episode.setDate(record.episodeDate());
