@@ -35,10 +35,10 @@ public class ExpectedEpisodeView extends JPanel {
 		flagPanel.add(dateLabel, BorderLayout.WEST);
 
 		episode.getDate().ifPresent(date -> {
-			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
+			if (date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MAX))) {
 				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Сегодня HH:mm")));
-			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {
-				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Вчера HH:mm")));
+			} else if (date.isBefore(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MAX))) {
+				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Завтра HH:mm")));
 			} else {
 				dateLabel.setText(date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 			}
