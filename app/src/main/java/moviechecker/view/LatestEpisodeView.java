@@ -33,12 +33,30 @@ public class LatestEpisodeView extends JPanel {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 
-		JPanel flagPanel = new JPanel();
-		add(flagPanel, BorderLayout.WEST);
-		flagPanel.setLayout(new BorderLayout(0, 0));
+		JPanel datePanel = new JPanel();
+		add(datePanel, BorderLayout.WEST);
+		datePanel.setLayout(new BorderLayout(0, 0));
+
+		JLabel dateLabel = new JLabel("Нестабильно");
+		dateLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+		datePanel.add(dateLabel, BorderLayout.EAST);
+
+		episode.getDate().ifPresent(date -> {
+			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
+				dateLabel.setText(date.format(todayFormat));
+			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {
+				dateLabel.setText(date.format(yesterdayFormat));
+			} else {
+				dateLabel.setText(date.format(dateTimeFormat));
+			}
+		});
+
+		JPanel titlePanel = new JPanel();
+		add(titlePanel, BorderLayout.CENTER);
+		titlePanel.setLayout(new BorderLayout(0, 0));
 
 		JCheckBox favoriteCheckBox = new JCheckBox();
-		flagPanel.add(favoriteCheckBox);
+		titlePanel.add(favoriteCheckBox, BorderLayout.WEST);
 
 		favoriteCheckBox.setSelected(controller.isInFavorites(episode));
 		favoriteCheckBox.addActionListener(event -> {
@@ -50,28 +68,10 @@ public class LatestEpisodeView extends JPanel {
 			}
 		});
 
-		JPanel titlePanel = new JPanel();
-		add(titlePanel, BorderLayout.CENTER);
-		titlePanel.setLayout(new BorderLayout(0, 0));
-		
 		JLabel titleLabel = new JLabel((String) null);
 		titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		titleLabel.setText(episode.getSeason().getTitle());
-		titlePanel.add(titleLabel, BorderLayout.WEST);
-		
-		JLabel dateLabel = new JLabel("Нестабильно");
-		dateLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		titlePanel.add(dateLabel, BorderLayout.EAST);
-		
-		episode.getDate().ifPresent(date -> {
-			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
-				dateLabel.setText(date.format(todayFormat));
-			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {
-				dateLabel.setText(date.format(yesterdayFormat));
-			} else {
-				dateLabel.setText(date.format(dateTimeFormat));
-			}
-		});
+		titlePanel.add(titleLabel, BorderLayout.CENTER);
 
 		JPanel actionPanel = new JPanel();
 		add(actionPanel, BorderLayout.EAST);

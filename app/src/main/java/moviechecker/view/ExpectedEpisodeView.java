@@ -31,8 +31,25 @@ public class ExpectedEpisodeView extends JPanel {
 		add(flagPanel, BorderLayout.WEST);
 		flagPanel.setLayout(new BorderLayout(0, 0));
 
+		JLabel dateLabel = new JLabel("Нестабильно");
+		flagPanel.add(dateLabel, BorderLayout.WEST);
+
+		episode.getDate().ifPresent(date -> {
+			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
+				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Сегодня HH:mm")));
+			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {
+				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Вчера HH:mm")));
+			} else {
+				dateLabel.setText(date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+			}
+		});
+
+		JPanel titlePanel = new JPanel();
+		add(titlePanel, BorderLayout.CENTER);
+		titlePanel.setLayout(new BorderLayout(0, 0));
+
 		JCheckBox favoriteCheckBox = new JCheckBox();
-		flagPanel.add(favoriteCheckBox);
+		titlePanel.add(favoriteCheckBox, BorderLayout.WEST);
 
 		favoriteCheckBox.setSelected(controller.isInFavorites(episode));
 		favoriteCheckBox.addActionListener(event -> {
@@ -44,25 +61,8 @@ public class ExpectedEpisodeView extends JPanel {
 			}
 		});
 
-		JPanel titlePanel = new JPanel();
-		add(titlePanel, BorderLayout.CENTER);
-		titlePanel.setLayout(new BorderLayout(0, 0));
-
 		JLabel titleLabel = new JLabel(episode.getSeason().getTitle());
-		titlePanel.add(titleLabel, BorderLayout.WEST);
-
-		JLabel dateLabel = new JLabel("Нестабильно");
-		titlePanel.add(dateLabel, BorderLayout.EAST);
-
-		episode.getDate().ifPresent(date -> {
-			if (date.isAfter(LocalDateTime.of(LocalDate.now(), LocalTime.MIN))) {
-				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Сегодня HH:mm")));
-			} else if (date.isAfter(LocalDateTime.of(LocalDate.now().minusDays(1), LocalTime.MIN))) {
-				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Вчера HH:mm")));
-			} else {
-				dateLabel.setText(date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
-			}
-		});
+		titlePanel.add(titleLabel, BorderLayout.CENTER);
 
 		JPanel actionPanel = new JPanel();
 		add(actionPanel, BorderLayout.EAST);
