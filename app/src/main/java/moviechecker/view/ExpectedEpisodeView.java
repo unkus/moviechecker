@@ -23,6 +23,10 @@ public class ExpectedEpisodeView extends JPanel {
 
 	private final Logger logger = LoggerFactory.getLogger(ExpectedEpisodeView.class);
 
+	private static DateTimeFormatter todayFormat = DateTimeFormatter.ofPattern("Сегодня в HH:mm");
+	private static DateTimeFormatter tomorrowFormat = DateTimeFormatter.ofPattern("Завтра в HH:mm");
+	private static DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("d-MM-yyyy, HH:mm");
+
 	public ExpectedEpisodeView(final Episode episode, EpisodeViewController controller) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
@@ -36,11 +40,11 @@ public class ExpectedEpisodeView extends JPanel {
 
 		episode.getDate().ifPresent(date -> {
 			if (date.isBefore(LocalDateTime.of(LocalDate.now(), LocalTime.MAX))) {
-				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Сегодня HH:mm")));
+				dateLabel.setText(date.format(todayFormat));
 			} else if (date.isBefore(LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MAX))) {
-				dateLabel.setText(date.format(DateTimeFormatter.ofPattern("Завтра HH:mm")));
+				dateLabel.setText(date.format(tomorrowFormat));
 			} else {
-				dateLabel.setText(date.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+				dateLabel.setText(date.format(dateTimeFormat));
 			}
 		});
 
