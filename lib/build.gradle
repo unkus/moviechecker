@@ -29,7 +29,9 @@ tasks.named('test') {
 }
 
 publishing {
-    repositories {
-        mavenLocal()
+    publications {
+        lib(MavenPublication) {
+            from components.java
+        }
     }
 }
