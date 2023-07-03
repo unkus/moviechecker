@@ -1,16 +1,16 @@
-package moviechecker.ui.controller;
+package moviechecker.ui.favorites;
 
 import moviechecker.ui.Tools;
-import moviechecker.ui.event.FavoriteRemovedEvent;
+import moviechecker.ui.events.FavoriteRemovedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
-import moviechecker.ui.view.ExpectedEpisodeView;
+import moviechecker.ui.episodes.ExpectedEpisodeView;
 
 @Component
 public class FavoriteViewController {
@@ -26,12 +26,12 @@ public class FavoriteViewController {
 	@Autowired
 	private FavoriteRepository favorites;
 
-	public void removeFromFavorites(FavoriteMovie favorite) {
+	public void removeFromFavorites(Favorite favorite) {
 		favorites.delete(favorite);
 		applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favorite));
 	}
 
-	public void openInBrowser(FavoriteMovie favorite) {
+	public void openInBrowser(Favorite favorite) {
 		tools.openInBrowser(favorite.getMovie().getSite().getLink().resolve(favorite.getMovie().getLink()));
 	}
 

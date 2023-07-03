@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import moviechecker.database.favorite.FavoriteRepository;
 import moviechecker.database.site.SiteRepository;
-import moviechecker.ui.view.MainView;
+import moviechecker.ui.MainView;
 
 @SpringBootApplication(scanBasePackages = "moviechecker")
 @EnableJpaRepositories(basePackages = "moviechecker")

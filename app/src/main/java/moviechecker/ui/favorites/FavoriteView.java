@@ -1,4 +1,4 @@
-package moviechecker.ui.view;
+package moviechecker.ui.favorites;
 
 import java.awt.BorderLayout;
 
@@ -7,12 +7,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import moviechecker.ui.controller.FavoriteViewController;
-import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.favorite.Favorite;
 
 public class FavoriteView extends JPanel {
 
-	public FavoriteView(final FavoriteMovie favorite, FavoriteViewController controller) {
+	public FavoriteView(final Favorite favorite, FavoriteViewController controller) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 		

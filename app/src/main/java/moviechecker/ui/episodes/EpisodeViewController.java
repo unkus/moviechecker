@@ -1,10 +1,10 @@
-package moviechecker.ui.controller;
+package moviechecker.ui.episodes;
 
 import java.util.Optional;
 
 import moviechecker.ui.Tools;
-import moviechecker.ui.event.FavoriteAddedEvent;
-import moviechecker.ui.event.FavoriteRemovedEvent;
+import moviechecker.ui.events.FavoriteAddedEvent;
+import moviechecker.ui.events.FavoriteRemovedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
 import moviechecker.database.episode.Episode;
-import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.favorite.Favorite;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.State;
 import moviechecker.database.episode.EpisodeRepository;
@@ -36,13 +36,13 @@ public class EpisodeViewController {
 	private EpisodeRepository episodes;
 
 	public void addToFavorites(Movie movie) {
-		FavoriteMovie favorite = new FavoriteMovie(movie);
+		Favorite favorite = new Favorite(movie);
 		favorites.save(favorite);
 		applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
 	}
 
 	public void removeFromFavorites(Movie movie) {
-		Optional<FavoriteMovie> favoriteOpt = favorites.findByMovie(movie);
+		Optional<Favorite> favoriteOpt = favorites.findByMovie(movie);
 		favoriteOpt.ifPresent(favorite -> {
 			favorites.delete(favorite);
 			applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
@@ -59,7 +59,7 @@ public class EpisodeViewController {
 	}
 
 	public void openInBrowser(Episode episode) {
-		Optional<FavoriteMovie> favoriteOpt = favorites.findByMovie(episode.getMovie());
+		Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getMovie());
 		favoriteOpt.ifPresent(favorite -> {
 			favorite.setLastViewed(episode);
 			favorites.save(favorite);

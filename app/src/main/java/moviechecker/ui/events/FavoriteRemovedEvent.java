@@ -1,4 +1,4 @@
-package moviechecker.ui.event;
+package moviechecker.ui.events;
 
 import org.springframework.context.ApplicationEvent;
 

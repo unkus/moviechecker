@@ -1,4 +1,4 @@
-package moviechecker.ui.view;
+package moviechecker.ui.episodes;
 
 import java.awt.BorderLayout;
 import java.time.LocalDate;
@@ -12,7 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import moviechecker.ui.controller.EpisodeViewController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

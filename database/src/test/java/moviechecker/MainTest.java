@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import moviechecker.database.episode.Episode;
-import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.favorite.Favorite;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.season.Season;
 import moviechecker.database.site.Site;
@@ -178,10 +178,10 @@ public class MainTest {
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
         Movie movieOne = movieOpt.get();
 
-        Optional<FavoriteMovie> favoriteMovieOpt = favorites.findByMovie(movieOne);
+        Optional<Favorite> favoriteMovieOpt = favorites.findByMovie(movieOne);
         assertTrue(favoriteMovieOpt.isPresent(), "No favorites found by movie");
 
-        FavoriteMovie favorite = favoriteMovieOpt.get();
+        Favorite favorite = favoriteMovieOpt.get();
         assertEquals(movieOne, favorite.getMovie(), "Unexpected movie returned as favorite");
 
         Optional<Movie> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");

@@ -15,7 +15,7 @@ import moviechecker.database.movie.Movie;
 
 @Entity
 @Table(name = "favorite")
-public class FavoriteMovie {
+public class Favorite {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,11 +33,11 @@ public class FavoriteMovie {
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public FavoriteMovie() {
+	public Favorite() {
 		super();
 	}
 	
-	public FavoriteMovie(Movie movie) {
+	public Favorite(Movie movie) {
 		this.movie = movie;
 	}
 	
@@ -71,7 +71,7 @@ public class FavoriteMovie {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		FavoriteMovie other = (FavoriteMovie) obj;
+		Favorite other = (Favorite) obj;
 		return Objects.equals(movie, other.movie);
 	}
 

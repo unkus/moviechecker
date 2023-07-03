@@ -15,7 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import moviechecker.database.converter.UriPersistanceConverter;
+import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.movie.Movie;
 
 @Entity

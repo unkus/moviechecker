@@ -8,7 +8,7 @@ import java.util.Optional;
 import jakarta.persistence.*;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.season.Season;
-import moviechecker.database.converter.UriPersistanceConverter;
+import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.State;
 
 @Entity

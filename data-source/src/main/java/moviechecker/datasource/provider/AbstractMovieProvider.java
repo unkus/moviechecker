@@ -9,9 +9,9 @@ import moviechecker.database.episode.EpisodeRepository;
 import moviechecker.database.movie.MovieRepository;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteRepository;
-import moviechecker.datasource.event.DataErrorEvent;
-import moviechecker.datasource.event.DataReceivedEvent;
-import moviechecker.datasource.event.DataRequestedEvent;
+import moviechecker.datasource.events.DataErrorEvent;
+import moviechecker.datasource.events.DataReceivedEvent;
+import moviechecker.datasource.events.DataRequestedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 

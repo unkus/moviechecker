@@ -1,4 +1,4 @@
-package moviechecker.database.converter;
+package moviechecker.database.converters;
 
 import java.net.URI;
 

@@ -1,18 +1,20 @@
-package moviechecker.ui.view;
+package moviechecker.ui;
 
 import jakarta.annotation.PostConstruct;
 import moviechecker.database.State;
 import moviechecker.database.episode.EpisodeRepository;
-import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
-import moviechecker.datasource.event.DataErrorEvent;
-import moviechecker.datasource.event.DataReceivedEvent;
-import moviechecker.datasource.event.DataRequestedEvent;
-import moviechecker.ui.controller.EpisodeViewController;
-import moviechecker.ui.controller.FavoriteViewController;
-import moviechecker.ui.controller.MainViewController;
-import moviechecker.ui.event.FavoriteAddedEvent;
-import moviechecker.ui.event.FavoriteRemovedEvent;
+import moviechecker.datasource.events.DataErrorEvent;
+import moviechecker.datasource.events.DataReceivedEvent;
+import moviechecker.datasource.events.DataRequestedEvent;
+import moviechecker.ui.episodes.EpisodeViewController;
+import moviechecker.ui.favorites.FavoriteViewController;
+import moviechecker.ui.episodes.ExpectedEpisodeView;
+import moviechecker.ui.episodes.LatestEpisodeView;
+import moviechecker.ui.events.FavoriteAddedEvent;
+import moviechecker.ui.events.FavoriteRemovedEvent;
+import moviechecker.ui.favorites.FavoriteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
@@ -128,7 +130,7 @@ public class MainView extends JFrame {
     @EventListener
     public void handleFavoriteAdd(FavoriteAddedEvent event) {
         SwingUtilities.invokeLater(() -> {
-            FavoriteMovie favorite = (FavoriteMovie) event.getSource();
+            Favorite favorite = (Favorite) event.getSource();
 
             favoritesPanel.add(new FavoriteView(favorite, favoriteViewController));
             // TODO: проставить флаг
