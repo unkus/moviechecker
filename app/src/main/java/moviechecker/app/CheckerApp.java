@@ -7,9 +7,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import moviechecker.repository.FavoriteRepository;
-import moviechecker.repository.SiteRepository;
-import moviechecker.view.MainView;
+import moviechecker.database.favorite.FavoriteRepository;
+import moviechecker.database.site.SiteRepository;
+import moviechecker.ui.view.MainView;
 
 @SpringBootApplication(scanBasePackages = "moviechecker")
 @EnableJpaRepositories(basePackages = "moviechecker")

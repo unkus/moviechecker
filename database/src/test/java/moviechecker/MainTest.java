@@ -4,18 +4,22 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import moviechecker.repository.*;
+import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.database.movie.MovieRepository;
+import moviechecker.database.season.SeasonRepository;
+import moviechecker.database.site.SiteRepository;
+import moviechecker.database.favorite.FavoriteRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import moviechecker.model.Episode;
-import moviechecker.model.FavoriteMovie;
-import moviechecker.model.Movie;
-import moviechecker.model.Season;
-import moviechecker.model.Site;
-import moviechecker.model.State;
+import moviechecker.database.episode.Episode;
+import moviechecker.database.favorite.FavoriteMovie;
+import moviechecker.database.movie.Movie;
+import moviechecker.database.season.Season;
+import moviechecker.database.site.Site;
+import moviechecker.database.State;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;

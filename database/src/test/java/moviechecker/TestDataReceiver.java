@@ -1,6 +1,6 @@
 package moviechecker;
 
-import moviechecker.event.DataReceivedEvent;
+import moviechecker.datasource.event.DataReceivedEvent;
 import org.springframework.boot.test.context.TestComponent;
 import org.springframework.context.event.EventListener;
 

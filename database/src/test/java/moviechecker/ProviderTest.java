@@ -1,20 +1,18 @@
 package moviechecker;
 
-import moviechecker.event.DataReceivedEvent;
-import moviechecker.event.DataRequestedEvent;
-import moviechecker.model.Episode;
-import moviechecker.model.Movie;
-import moviechecker.model.Season;
-import moviechecker.model.Site;
-import moviechecker.provider.MovieProvider;
-import moviechecker.repository.EpisodeRepository;
-import moviechecker.repository.MovieRepository;
-import moviechecker.repository.SeasonRepository;
-import moviechecker.repository.SiteRepository;
+import moviechecker.database.episode.Episode;
+import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.database.movie.Movie;
+import moviechecker.database.movie.MovieRepository;
+import moviechecker.database.season.Season;
+import moviechecker.database.season.SeasonRepository;
+import moviechecker.database.site.Site;
+import moviechecker.database.site.SiteRepository;
+import moviechecker.datasource.event.DataReceivedEvent;
+import moviechecker.datasource.event.DataRequestedEvent;
+import moviechecker.datasource.provider.MovieProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -25,20 +23,28 @@ import java.net.URI;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @RecordApplicationEvents
 public class ProviderTest {
 
-    @Autowired private ApplicationEventPublisher applicationEventPublisher;
-    @SpyBean private MovieProvider provider;
-    @SpyBean private TestDataReceiver component;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+    @SpyBean
+    private MovieProvider provider;
+    @SpyBean
+    private TestDataReceiver component;
 
-    @Autowired private SiteRepository sites;
-    @Autowired private MovieRepository movies;
-    @Autowired private SeasonRepository seasons;
-    @Autowired private EpisodeRepository episodes;
+    @Autowired
+    private SiteRepository sites;
+    @Autowired
+    private MovieRepository movies;
+    @Autowired
+    private SeasonRepository seasons;
+    @Autowired
+    private EpisodeRepository episodes;
 
     @Test
     public void dataRequestProcessed() throws Exception {

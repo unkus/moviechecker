@@ -1,6 +1,6 @@
 package moviechecker;
 
-import moviechecker.model.State;
+import moviechecker.database.State;
 import moviechecker.provider.AbstractMovieProvider;
 import moviechecker.provider.DataRecord;
 import org.springframework.stereotype.Component;

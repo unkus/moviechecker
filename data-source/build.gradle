@@ -1,8 +1,7 @@
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'application'
-	id 'maven-publish'
+    id 'java-library'
+    id 'eclipse'
+    id 'maven-publish'
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
 }
@@ -17,17 +16,14 @@ repositories {
 }
 
 dependencies {
-	implementation project(':database')
-
     implementation 'org.springframework.boot:spring-boot-starter:3.1.0'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
-    implementation project(path: ':data-source')
-    //implementation 'com.yandex.android:disk-restapi-sdk:1.03'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.0.4'
+    implementation project(path: ':database')
 
     runtimeOnly 'com.h2database:h2:2.1.214'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
 }
 
 tasks.named('test') {
@@ -36,10 +32,8 @@ tasks.named('test') {
 
 publishing {
     publications {
-        app(MavenPublication) {
+        lib(MavenPublication) {
             from components.java
         }
     }
 }
-
-mainClassName = 'moviechecker.CheckerMain'

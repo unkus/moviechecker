@@ -1,3 +1,6 @@
 rootProject.name = 'moviechecker'
-include('app', 'database')
+include 'database'
+include 'data-source'
+include 'app'
 include 'demo'
+
