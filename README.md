@@ -14,28 +14,28 @@ The goal of the project is to gain experience with the next stack:
 Project include two main modules and one demonstration module.
 There is also one external module that should provide data.
 
-### 2.1 Library
-The library project describes tables in database and basic functions for provider.
-
-#### 2.1.1 Database
+### 2.1 Database
 The data is distributed across tables: site, movie, season, episode and favorite.
-All tables from "site" to "episode" have one-to-many relationship, except "favorite".
-Table "favorite" has one-to-one relationship with movie and episode (last viewed episode).
+one-to-many relations: site->movie->season->episode 
+one-to-one relations: 
+- favorite->movie 
+- favorite->episode - keeping last viewed episode
 
-#### 2.1.2 Basic Provider Functions
-The following functions allow a provider to concentrate on getting data.
-- Handles data request from GUI calling retrieveData method implemented in an external provider.
-- Sends data received event when data will be received.
-- Sends data error event in case of an exception from an external provider.
-- Transfer data provided in DataRecord to database entities.
+### 2.2 Source
+The idea is to provide an interface and basic functionality for data providers developed as a separate library.
+Common functions allowing to a data provider to concentrate on getting data.
+- Receiving data request and calling implemented interface.
+- Sends data received event when data provider prepares it.
+- Store data in database.
+- Sends data error event in case of error during data retrieving.
 
-### 2.2 GUI Application
+### 2.3 GUI Application
 The app project provides a couple of views representing data received from a provider.  
 Provides the ability to open episodes in the default system browser and mark movies as favorites.
 ![Latest view](./latest.png)
 ![Expected view](./expected.png)
 ![Favorite view](./favorites.png)
 
-### 2.3 Demo Provider
+### 2.4 Demo Provider
 Demonstrates how data can be extracted and transferred to the library.  
 The data.html file is used as source for data. 

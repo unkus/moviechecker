@@ -18,9 +18,9 @@ repositories {
 dependencies {
     // Используем project в зависимости для удобства - не надо публиковать основные модули для запуска демострации.
     // Полноценный поставщик данных должен будет использовать репозиторий.
-    implementation project(':lib')
+    implementation project(':database')
     implementation project(':app')
-//	implementation 'moviechecker:lib:0.0.1-SNAPSHOT'
+//	implementation 'moviechecker:databse:0.0.1-SNAPSHOT'
 //  implementation 'moviechecker:app:0.0.1-SNAPSHOT'
 
 	implementation 'org.springframework.boot:spring-boot-starter:3.1.0'
