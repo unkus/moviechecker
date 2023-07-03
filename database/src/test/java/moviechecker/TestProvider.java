@@ -1,8 +1,8 @@
 package moviechecker;
 
 import moviechecker.database.State;
-import moviechecker.provider.AbstractMovieProvider;
-import moviechecker.provider.DataRecord;
+import moviechecker.datasource.provider.AbstractMovieProvider;
+import moviechecker.datasource.provider.DataRecord;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
