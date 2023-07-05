@@ -10,6 +10,7 @@ public record DataRecord(URI siteAddress,
                          String movieTitle,
                          URI movieLink,
                          Integer seasonNumber,
+                         URI seasonLink,
                          Integer episodeNumber,
                          String episodeTitle,
                          URI episodeLink,
@@ -22,6 +23,7 @@ public record DataRecord(URI siteAddress,
                 builder.movieTitle,
                 builder.movieLink,
                 builder.seasonNumber,
+                builder.seasonLink,
                 builder.episodeNumber,
                 builder.episodeTitle,
                 builder.episodeLink,
@@ -35,6 +37,7 @@ public record DataRecord(URI siteAddress,
         private String movieTitle;
         private URI movieLink;
         private Integer seasonNumber;
+        private URI seasonLink;
         private Integer episodeNumber;
         private String episodeTitle;
         private URI episodeLink;
@@ -63,6 +66,11 @@ public record DataRecord(URI siteAddress,
 
         public Builder seasonNumber(int seasonNumber) {
             this.seasonNumber = seasonNumber;
+            return this;
+        }
+
+        public Builder seasonLink(URI seasonLink) {
+            this.seasonLink = seasonLink;
             return this;
         }
 
