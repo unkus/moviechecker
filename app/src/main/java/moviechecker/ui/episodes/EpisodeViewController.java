@@ -2,6 +2,7 @@ package moviechecker.ui.episodes;
 
 import java.util.Optional;
 
+import moviechecker.ui.ItemController;
 import moviechecker.ui.Tools;
 import moviechecker.ui.events.FavoriteAddedEvent;
 import moviechecker.ui.events.FavoriteRemovedEvent;
@@ -19,53 +20,49 @@ import moviechecker.database.episode.EpisodeRepository;
 import moviechecker.database.favorite.FavoriteRepository;
 
 @Component
-public class EpisodeViewController {
+public class EpisodeViewController extends ItemController {
 
-	private Logger logger = LoggerFactory.getLogger(EpisodeViewController.class);
+    private Logger logger = LoggerFactory.getLogger(EpisodeViewController.class);
 
-	@Autowired
-	private ApplicationEventPublisher applicationEventPublisher;
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
-	@Autowired
-	private Tools tools;
+    @Autowired
+    private Tools tools;
 
-	@Autowired
-	private FavoriteRepository favorites;
+    @Autowired
+    private FavoriteRepository favorites;
 
-	@Autowired
-	private EpisodeRepository episodes;
+    @Autowired
+    private EpisodeRepository episodes;
 
-	public void addToFavorites(Movie movie) {
-		Favorite favorite = new Favorite(movie);
-		favorites.save(favorite);
-		applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
-	}
+    public void addToFavorites(Movie movie) {
+        Favorite favorite = new Favorite(movie);
+        favorites.save(favorite);
+        applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
+    }
 
-	public void removeFromFavorites(Movie movie) {
-		Optional<Favorite> favoriteOpt = favorites.findByMovie(movie);
-		favoriteOpt.ifPresent(favorite -> {
-			favorites.delete(favorite);
-			applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
-		});
-	}
+    public void removeFromFavorites(Movie movie) {
+        Optional<Favorite> favoriteOpt = favorites.findByMovie(movie);
+        favoriteOpt.ifPresent(favorite -> {
+            favorites.delete(favorite);
+            applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
+        });
+    }
 
-	public boolean isInFavorites(Episode episode) {
-		return favorites.existsByMovie(episode.getMovie());
-	}
+    public boolean isInFavorites(Episode episode) {
+        return favorites.existsByMovie(episode.getMovie());
+    }
 
-	public void markViewed(Episode episode) {
-		episode.setState(State.VIEWED);
-		episodes.save(episode);
-	}
+    public void markViewed(Episode episode) {
+        episode.setState(State.VIEWED);
+        episodes.save(episode);
 
-	public void openInBrowser(Episode episode) {
-		Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getMovie());
-		favoriteOpt.ifPresent(favorite -> {
-			favorite.setLastViewed(episode);
-			favorites.save(favorite);
-		});
-
-		tools.openInBrowser(episode.getMovie().getSite().getLink().resolve(episode.getLink()));
-	}
+        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getMovie());
+        favoriteOpt.ifPresent(favorite -> {
+            favorite.setLastViewed(episode);
+            favorites.save(favorite);
+        });
+    }
 
 }
