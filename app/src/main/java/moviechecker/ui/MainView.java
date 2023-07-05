@@ -66,6 +66,7 @@ public class MainView extends JFrame {
         contentPane.add(tabbedPane);
 
         JScrollPane latestScrollPane = new JScrollPane();
+        latestScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         tabbedPane.addTab("Последнее", null, latestScrollPane, null);
 
         latestPanel = new JPanel();
@@ -73,6 +74,7 @@ public class MainView extends JFrame {
         latestPanel.setLayout(new BoxLayout(latestPanel, BoxLayout.Y_AXIS));
 
         JScrollPane expectedScrollPane = new JScrollPane();
+        expectedScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         tabbedPane.addTab("Ожидаемое", null, expectedScrollPane, null);
 
         expectedPanel = new JPanel();
@@ -80,6 +82,7 @@ public class MainView extends JFrame {
         expectedPanel.setLayout(new BoxLayout(expectedPanel, BoxLayout.Y_AXIS));
 
         JScrollPane favoritesScrollPane = new JScrollPane();
+        favoritesScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         tabbedPane.addTab("Избранное", null, favoritesScrollPane, null);
 
         favoritesPanel = new JPanel();
