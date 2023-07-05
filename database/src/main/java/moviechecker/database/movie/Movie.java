@@ -43,6 +43,10 @@ public class Movie {
 	@Column(nullable = false)
 	@Convert(converter = UriPersistanceConverter.class)
 	private URI link;
+
+	@Column(name = "poster_link")
+	@Convert(converter = UriPersistanceConverter.class)
+	private URI posterLink;
 	
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<Season> seasons = new HashSet<>();
