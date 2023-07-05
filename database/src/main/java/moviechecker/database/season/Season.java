@@ -57,6 +57,10 @@ public class Season {
 		return movie.getTitle() + " " + number;
 	}
 
+	public URI getLink() { return link; }
+
+	public void setLink(URI link) { this.link = link; }
+
 	public Set<Episode> getEpisodes() {
 		return episodes;
 	}

@@ -9,6 +9,6 @@ spring:
       ddl-auto: update
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:file:~/.movieChecker/favoritesdb
+    url: jdbc:h2:file:~/.movieChecker/checkerdb
     username: sa
     password: 

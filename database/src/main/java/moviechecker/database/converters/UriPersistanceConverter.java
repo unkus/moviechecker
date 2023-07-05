@@ -18,7 +18,7 @@ public class UriPersistanceConverter implements AttributeConverter<URI, String> 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Converting URI (" + attribute + ") to String.");
 		}
-		return attribute.toString();
+		return attribute != null ? attribute.toString() : null ;
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class UriPersistanceConverter implements AttributeConverter<URI, String> 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Converting String (" + dbData + ") to URI.");
 		}
-		return URI.create(dbData);
+		return dbData != null ? URI.create(dbData) : null;
 	}
 
 }
