@@ -32,7 +32,7 @@ Common functions allowing to a data provider to concentrate on getting data.
 ### 2.3 GUI Application
 The app project provides a couple of views representing data received from a provider.  
 Provides the ability to open episodes in the default system browser and mark movies as favorites.
-![Latest view](./latest.png)
+![Released view](./released.png)
 ![Expected view](./expected.png)
 ![Favorite view](./favorites.png)
 

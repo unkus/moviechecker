@@ -11,7 +11,7 @@ import moviechecker.datasource.events.DataRequestedEvent;
 import moviechecker.ui.episodes.EpisodeViewController;
 import moviechecker.ui.favorites.FavoriteViewController;
 import moviechecker.ui.episodes.ExpectedEpisodeView;
-import moviechecker.ui.episodes.LatestEpisodeView;
+import moviechecker.ui.episodes.ReleasedEpisodeView;
 import moviechecker.ui.events.FavoriteAddedEvent;
 import moviechecker.ui.events.FavoriteRemovedEvent;
 import moviechecker.ui.favorites.FavoriteView;
@@ -47,7 +47,7 @@ public class MainView extends JFrame {
     @Autowired
     private FavoriteRepository favorites;
 
-    private final JPanel latestPanel;
+    private final JPanel releasedPanel;
 
     private final JPanel expectedPanel;
 
@@ -69,9 +69,9 @@ public class MainView extends JFrame {
         latestScrollPane.getVerticalScrollBar().setUnitIncrement(10);
         tabbedPane.addTab("Последнее", null, latestScrollPane, null);
 
-        latestPanel = new JPanel();
-        latestScrollPane.setViewportView(latestPanel);
-        latestPanel.setLayout(new BoxLayout(latestPanel, BoxLayout.Y_AXIS));
+        releasedPanel = new JPanel();
+        latestScrollPane.setViewportView(releasedPanel);
+        releasedPanel.setLayout(new BoxLayout(releasedPanel, BoxLayout.Y_AXIS));
 
         JScrollPane expectedScrollPane = new JScrollPane();
         expectedScrollPane.getVerticalScrollBar().setUnitIncrement(10);
@@ -103,8 +103,8 @@ public class MainView extends JFrame {
 
     private void updateView() {
         episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-            LatestEpisodeView view = new LatestEpisodeView(episodeViewController);
-            latestPanel.add(view);
+            ReleasedEpisodeView view = new ReleasedEpisodeView(episodeViewController);
+            releasedPanel.add(view);
             view.bind(episode);
         });
         episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
@@ -127,7 +127,7 @@ public class MainView extends JFrame {
     @EventListener
     public void handleDataReceive(DataReceivedEvent event) {
         SwingUtilities.invokeLater(() -> {
-            latestPanel.removeAll();
+            releasedPanel.removeAll();
             expectedPanel.removeAll();
 
             updateView();
