@@ -103,10 +103,14 @@ public class MainView extends JFrame {
 
     private void updateView() {
         episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-            latestPanel.add(new LatestEpisodeView(episode, episodeViewController));
+            LatestEpisodeView view = new LatestEpisodeView(episodeViewController);
+            latestPanel.add(view);
+            view.bind(episode);
         });
         episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
-            expectedPanel.add(new ExpectedEpisodeView(episode, episodeViewController));
+            ExpectedEpisodeView view = new ExpectedEpisodeView(episodeViewController);
+            expectedPanel.add(view);
+            view.bind(episode);
         });
         contentPane.validate();
     }

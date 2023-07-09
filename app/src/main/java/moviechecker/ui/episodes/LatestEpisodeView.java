@@ -19,12 +19,12 @@ import moviechecker.database.episode.Episode;
 
 public class LatestEpisodeView extends EpisodeView {
 
-	public LatestEpisodeView(final Episode episode, EpisodeViewController controller) {
-		super(episode, controller);
+	public LatestEpisodeView(final EpisodeViewController controller) {
+		super(controller);
 	}
 
 	@Override
-	protected void onOpenButtonClicked(EpisodeViewController controller, Episode episode) {
+	protected void onOpenButtonClicked(final EpisodeViewController controller, final Episode episode) {
 		super.onOpenButtonClicked(controller, episode);
 		controller.markViewed(episode);
 	}
