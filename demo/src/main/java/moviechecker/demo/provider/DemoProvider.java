@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class DemoProvider extends AbstractMovieProvider {
      * @return The new reader.
      */
     private BufferedReader createHtmlReader() {
-        return new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream("/data.html"), StandardCharsets.UTF_8));
+        return new BufferedReader(new InputStreamReader(Objects.requireNonNull(this.getClass().getResourceAsStream("/data.html")), StandardCharsets.UTF_8));
     }
 
     @Override

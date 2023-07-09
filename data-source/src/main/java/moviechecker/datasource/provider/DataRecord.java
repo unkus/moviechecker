@@ -107,7 +107,47 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public DataRecord build() {
+        private void validate() throws Exception {
+            if (siteAddress == null) {
+                throw new Exception("Site address is not set");
+            }
+            if (moviePageId == null) {
+                throw new Exception("Movie page id is not set");
+            }
+            if (movieTitle == null) {
+                throw new Exception("Movie title is not set");
+            }
+            if (movieLink == null) {
+                throw new Exception("Movie link is not set");
+            }
+            if (moviePosterLink == null) {
+                throw new Exception("Movie poster link is not set");
+            }
+            if (seasonNumber == null) {
+                throw new Exception("Season number is not set");
+            }
+            if (seasonLink == null) {
+                throw new Exception("Season link is not set");
+            }
+            if (episodeNumber == null) {
+                throw new Exception("Episode number is not set");
+            }
+            if (episodeTitle == null) {
+                throw new Exception("Episode title is not set");
+            }
+            if (episodeLink == null) {
+                throw new Exception("Episode link is not set");
+            }
+            if (episodeState == null) {
+                throw new Exception("State is not set");
+            }
+            if (episodeDate == null) {
+                throw new Exception("Date is not set");
+            }
+        }
+
+        public DataRecord build() throws Exception {
+            validate();
             return new DataRecord(this);
         }
     }

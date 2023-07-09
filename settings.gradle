@@ -3,4 +3,5 @@ include 'database'
 include 'data-source'
 include 'app'
 include 'demo'
+include 'lostfilm'
 

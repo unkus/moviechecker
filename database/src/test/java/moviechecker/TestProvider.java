@@ -23,6 +23,11 @@ public class TestProvider extends AbstractMovieProvider {
                 .episodeLink(URI.create("/movie/episode"))
                 .episodeState(State.EXPECTED)
                 .episodeDate(LocalDateTime.now());
-        saveRecord(record.build());
+        try {
+            saveRecord(record.build());
+        } catch (Exception e) {
+            // Doing something
+            throw new RuntimeException(e);
+        }
     }
 }
