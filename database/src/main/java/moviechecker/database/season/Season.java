@@ -51,7 +51,7 @@ public class Season {
 	}
 
 	public String getTitle() {
-		return movie.getTitle() + " " + number;
+		return movie.getTitle() + (number > 1 ? " " + number : "");
 	}
 
 	public String getPath() { return path; }
