@@ -21,7 +21,7 @@ one-to-one relations:
 - favorite->movie 
 - favorite->episode - keeping last viewed episode
 
-### 2.2 Source
+### 2.2 Data source
 The idea is to provide an interface and basic functionality for data providers developed as a separate library.
 Common functions allowing to a data provider to concentrate on getting data.
 - Receiving data request and calling implemented interface.
@@ -36,6 +36,6 @@ Provides the ability to open episodes in the default system browser and mark mov
 ![Expected view](./expected.png)
 ![Favorite view](./favorites.png)
 
-### 2.4 Demo Provider
+### 2.4 Lostfilm Data Provider
 Demonstrates how data can be extracted and transferred to the library.  
 The data.html file is used as source for data. 
