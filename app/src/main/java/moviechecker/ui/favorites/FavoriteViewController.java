@@ -31,8 +31,4 @@ public class FavoriteViewController {
 		applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favorite));
 	}
 
-	public void openInBrowser(Favorite favorite) {
-		tools.openInBrowser(favorite.getMovie().getSite().getLink().resolve(favorite.getMovie().getPath()));
-	}
-
 }

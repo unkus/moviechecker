@@ -1,14 +1,14 @@
 -- 'https://site.one'
 --
--- 'movie_one', 'Фильм первый', '/movie_one', '/poster_one.jpg'
--- 1, '/season_1'
--- 11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-05 12:35:29'
--- 12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-10 11:21:29'
+-- 'movie_one', 'Фильм первый', 'https://site.one/movie_one', 'https://site.one/poster_one.jpg'
+-- 1, 'https://site.one/season_1'
+-- 11, 'Серия 11', 'https://site.one/movie_one/1/11.html', 2, TIMESTAMP '2023-01-05 12:35:29'
+-- 12, 'Серия 12', 'https://site.one/movie_one/1/12.html', 0, TIMESTAMP '2023-01-10 11:21:29'
 --
--- 'movie_two', 'Фильм второй', '/movie_two', '/poster_two.jpg'
--- 2, '/season_2'
--- 24, 'Серия 24', '/movie_two/2/24.html', 2, TIMESTAMP '2023-01-08 12:35:29'
--- 25, 'Серия 25', '/movie_two/2/25.html', 1, TIMESTAMP '2023-01-09 13:23:16'
+-- 'movie_two', 'Фильм второй', 'https://site.one/movie_two', 'https://site.one/poster_two.jpg'
+-- 2, 'https://site.one/season_2'
+-- 24, 'Серия 24', 'https://site.one/movie_two/2/24.html', 2, TIMESTAMP '2023-01-08 12:35:29'
+-- 25, 'Серия 25', 'https://site.one/movie_two/2/25.html', 1, TIMESTAMP '2023-01-09 13:23:16'
 --
 -- favorites:
 -- 'movie_one', 11
@@ -16,15 +16,15 @@
 --
 -- 'https://site.two'
 --
--- 'movie_one', 'Фильм первый', '/movie_one', '/poster_one.jpg'
--- 1, '/season_1'
--- 11, 'Серия 11', '/movie_one/1/11.html', 2, TIMESTAMP '2023-01-06 13:35:29'
--- 12, 'Серия 12', '/movie_one/1/12.html', 0, TIMESTAMP '2023-01-11 12:21:29'
+-- 'movie_one', 'Фильм первый', 'https://site.two/movie_one', 'https://site.two/poster_one.jpg'
+-- 1, 'https://site.two/season_1'
+-- 11, 'Серия 11', 'https://site.two/movie_one/1/11.html', 2, TIMESTAMP '2023-01-06 13:35:29'
+-- 12, 'Серия 12', 'https://site.two/movie_one/1/12.html', 0, TIMESTAMP '2023-01-11 12:21:29'
 --
--- 'movie_three', 'Фильм третий', '/movie_three', '/poster_three.jpg'
--- 1, '/season_1'
--- 1, 'Серия 1', '/movie_three/1/1.html', 1, TIMESTAMP '2023-01-06 18:33:41'
--- 2, 'Серия 2', '/movie_three/1/2.html', 0'
+-- 'movie_three', 'Фильм третий', 'https://site.two/movie_three', 'https://site.two/poster_three.jpg'
+-- 1, 'https://site.two/season_1'
+-- 1, 'Серия 1', 'https://site.two/movie_three/1/1.html', 1, TIMESTAMP '2023-01-06 18:33:41'
+-- 2, 'Серия 2', 'https://site.two/movie_three/1/2.html', 0'
 --
 -- favorites:
 -- 'movie_three'
@@ -33,50 +33,50 @@
 INSERT INTO	site (address) VALUES ('https://site.one');
 
 -- movie one
-INSERT INTO movie (site_id, page_id, title, path, poster_link)
-    SELECT s.id, 'movie_one', 'Фильм первый', '/movie_one', '/poster_one.jpg'
+INSERT INTO movie (site_id, page_id, title, link, poster_link)
+    SELECT s.id, 'movie_one', 'Фильм первый', 'https://site.one/movie_one', 'https://site.one/poster_one.jpg'
     FROM site s
     WHERE s.address = 'https://site.one';
 
 -- season 1
-INSERT INTO season (movie_id, number, path)
-    SELECT m.id, 1, '/season_1'
+INSERT INTO season (movie_id, number, link)
+    SELECT m.id, 1, 'https://site.one/season_1'
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.one'
     WHERE m.page_id = 'movie_one';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, path, state, date)
-    SELECT s.id, tmp.number, tmp.title, tmp.path, tmp.state, tmp.date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM ( VALUES
-            (11, 'Серия 11', '/movie_one/1/11', 2, TIMESTAMP '2023-01-05 12:35:29'),
-            (12, 'Серия 12', '/movie_one/1/12', 0, TIMESTAMP '2023-01-10 11:21:29')
-        ) tmp (number, title, path, state, date)
+            (11, 'Серия 11', 'https://site.one/movie_one/1/11', 2, TIMESTAMP '2023-01-05 12:35:29'),
+            (12, 'Серия 12', 'https://site.one/movie_one/1/12', 0, TIMESTAMP '2023-01-10 11:21:29')
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_one'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.one';
 
 -- movie two
-INSERT INTO movie (site_id, page_id, title, path, poster_link)
-    SELECT s.id, 'movie_two', 'Фильм второй', '/movie_two', '/poster_two.jpg'
+INSERT INTO movie (site_id, page_id, title, link, poster_link)
+    SELECT s.id, 'movie_two', 'Фильм второй', 'https://site.one/movie_two', 'https://site.one/poster_two.jpg'
     FROM site s
     WHERE s.address = 'https://site.one';
 
 -- season 2
-INSERT INTO season (movie_id, number, path)
-    SELECT m.id, 2, '/season_2'
+INSERT INTO season (movie_id, number, link)
+    SELECT m.id, 2, 'https://site.one/season_2'
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.one'
     WHERE m.page_id = 'movie_two';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, path, state, date)
-    SELECT s.id, tmp.number, tmp.title, tmp.path, tmp.state, tmp.date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM
         ( VALUES
-            (24, 'Серия 24', '/movie_two/2/24', 2, TIMESTAMP '2023-01-08 12:35:29'),
-            (25, 'Серия 25', '/movie_two/2/25', 1, TIMESTAMP '2023-01-09 13:23:16')
-        ) tmp (number, title, path, state, date)
+            (24, 'Серия 24', 'https://site.one/movie_two/2/24', 2, TIMESTAMP '2023-01-08 12:35:29'),
+            (25, 'Серия 25', 'https://site.one/movie_two/2/25', 1, TIMESTAMP '2023-01-09 13:23:16')
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 2
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_two'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.one';
@@ -102,50 +102,50 @@ INSERT INTO favorite (movie_id, episode_id)
 INSERT INTO	site (address) VALUES ('https://site.two');
 
 -- movie one
-INSERT INTO movie (site_id, page_id, title, path, poster_link)
-    SELECT s.id, 'movie_one', 'Фильм первый', '/movie_one', '/poster_one.jpg'
+INSERT INTO movie (site_id, page_id, title, link, poster_link)
+    SELECT s.id, 'movie_one', 'Фильм первый', 'https://site.two/movie_one', 'https://site.two/poster_one.jpg'
     FROM site s
     WHERE s.address = 'https://site.two';
 
 -- season 1
-INSERT INTO season (movie_id, number, path)
-    SELECT m.id, 1, '/season_1'
+INSERT INTO season (movie_id, number, link)
+    SELECT m.id, 1, 'https://site.two/season_1'
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.two'
     WHERE m.page_id = 'movie_one';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, path, state, date)
-    SELECT s.id, tmp.number, tmp.title, tmp.path, tmp.state, tmp.date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM ( VALUES
-            (11, 'Серия 11', '/movie_one/1/11', 2, TIMESTAMP '2023-01-06 13:35:29'),
-            (12, 'Серия 12', '/movie_one/1/12', 0, TIMESTAMP '2023-01-11 12:21:29')
-        ) tmp (number, title, path, state, date)
+            (11, 'Серия 11', 'https://site.two/movie_one/1/11', 2, TIMESTAMP '2023-01-06 13:35:29'),
+            (12, 'Серия 12', 'https://site.two/movie_one/1/12', 0, TIMESTAMP '2023-01-11 12:21:29')
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_one'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.two';
 
 -- movie three
-INSERT INTO movie (site_id, page_id, title, path, poster_link)
-    SELECT s.id, 'movie_three', 'Фильм третий', '/movie_three', '/poster_three.jpg'
+INSERT INTO movie (site_id, page_id, title, link, poster_link)
+    SELECT s.id, 'movie_three', 'Фильм третий', 'https://site.two/movie_three', 'https://site.two/poster_three.jpg'
     FROM site s
     WHERE s.address = 'https://site.two';
 
 -- season 1
-INSERT INTO season (movie_id, number, path)
-    SELECT m.id, 1, '/season_1'
+INSERT INTO season (movie_id, number, link)
+    SELECT m.id, 1, 'https://site.two/season_1'
     FROM movie m
     JOIN site s ON s.id = m.site_id AND s.address = 'https://site.two'
     WHERE m.page_id = 'movie_three';
 
 -- episodes
-INSERT INTO episode (season_id, number, title, path, state, date)
-    SELECT s.id, tmp.number, tmp.title, tmp.path, tmp.state, tmp.date
+INSERT INTO episode (season_id, number, title, link, state, date)
+    SELECT s.id, tmp.number, tmp.title, tmp.link, tmp.state, tmp.date
     FROM
         ( VALUES
-            (1, 'Серия 1', '/movie_three/1/1', 1, TIMESTAMP '2023-01-06 18:33:41'),
-            (2, 'Серия 2', '/movie_three/1/2', 0, NULL)
-        ) tmp (number, title, path, state, date)
+            (1, 'Серия 1', 'https://site.two/movie_three/1/1', 1, TIMESTAMP '2023-01-06 18:33:41'),
+            (2, 'Серия 2', 'https://site.two/movie_three/1/2', 0, NULL)
+        ) tmp (number, title, link, state, date)
     JOIN season s ON s.number = 1
     JOIN movie m ON m.id = s.movie_id AND m.page_id = 'movie_three'
     JOIN site ON site.id = m.site_id AND site.address = 'https://site.two';

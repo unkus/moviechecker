@@ -13,10 +13,6 @@ public class ItemController {
     @Autowired private Tools tools;
 
     public void onClick$Open(Episode episode) {
-        Site site = episode.getMovie().getSite();
-        Movie movie = episode.getMovie();
-        Season season = episode.getSeason();
-        URI link = site.getLink().resolve(movie.getPath() + season.getPath() + episode.getPath());
-        tools.openInBrowser(link);
+        tools.openInBrowser(episode.getLink());
     }
 }

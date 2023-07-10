@@ -16,13 +16,13 @@ public class TestProvider extends AbstractMovieProvider {
         record.site(URI.create("https://test.test"))
                 .moviePageId("movie")
                 .movieTitle("movie")
-                .moviePath("/movie")
-                .moviePosterLink(URI.create("/poster_one.jpg"))
+                .moviePath(URI.create("https://test.test/movie"))
+                .moviePosterLink(URI.create("https://test.test/poster_one.jpg"))
                 .seasonNumber(1)
-                .seasonPath("/season")
+                .seasonPath(URI.create("https://test.test/movie/season"))
                 .episodeNumber(1)
                 .episodeTitle("episode 1")
-                .episodePath("/episode")
+                .episodePath(URI.create("https://test.test/movie/season/episode"))
                 .episodeState(State.EXPECTED)
                 .episodeDate(LocalDateTime.now());
         try {

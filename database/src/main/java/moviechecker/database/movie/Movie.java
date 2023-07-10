@@ -29,7 +29,8 @@ public class Movie {
 	private String title;
 
 	@Column(nullable = false)
-	private String path;
+	@Convert(converter = UriPersistanceConverter.class)
+	private URI link;
 
 	@Column(name = "poster_link")
 	@Convert(converter = UriPersistanceConverter.class)
@@ -67,12 +68,12 @@ public class Movie {
 		this.title = title;
 	}
 
-	public String getPath() {
-		return path;
+	public URI getLink() {
+		return link;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setLink(URI link) {
+		this.link = link;
 	}
 
 	public URI getPosterLink() { return posterLink; }

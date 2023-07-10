@@ -1,10 +1,12 @@
 package moviechecker.database.season;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.episode.Episode;
 import moviechecker.database.movie.Movie;
 
@@ -24,7 +26,8 @@ public class Season {
 	private int number;
 
 	@Column(nullable = false)
-	private String path;
+	@Convert(converter = UriPersistanceConverter.class)
+	private URI link;
 
 	@OneToMany(mappedBy = "season", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<Episode> episodes = new HashSet<>();
@@ -54,9 +57,9 @@ public class Season {
 		return movie.getTitle() + (number > 1 ? " " + number : "");
 	}
 
-	public String getPath() { return path; }
+	public URI getLink() { return link; }
 
-	public void setPath(String path) { this.path = path; }
+	public void setLink(URI link) { this.link = link; }
 
 	public Set<Episode> getEpisodes() {
 		return episodes;

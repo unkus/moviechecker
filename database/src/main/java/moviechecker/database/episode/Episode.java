@@ -1,10 +1,12 @@
 package moviechecker.database.episode;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.persistence.*;
+import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.season.Season;
 import moviechecker.database.State;
@@ -28,7 +30,8 @@ public class Episode {
 	private String title;
 
 	@Column(nullable = false)
-	private String path;
+	@Convert(converter = UriPersistanceConverter.class)
+	private URI link;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.ORDINAL)
@@ -75,12 +78,12 @@ public class Episode {
 		this.title = title;
 	}
 
-	public String getPath() {
-		return path;
+	public URI getLink() {
+		return link;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setLink(URI link) {
+		this.link = link;
 	}
 
 	public State getState() {

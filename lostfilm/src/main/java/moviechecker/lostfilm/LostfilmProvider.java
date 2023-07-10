@@ -24,7 +24,7 @@ public class LostfilmProvider extends AbstractMovieProvider {
     private static final String SITE = "https://www.lostfilmtv5.site";
 
     private static final Pattern NEW_MOVIE_TAG_PATTERN = Pattern
-            .compile("<a class=\"new-movie\" href=\"(?<moviePath>/series/(?<moviePageId>.+))(?<seasonPath>/.+)(?<episodePath>/.+)/\" title=\"(?<title>.+)\">");
+            .compile("<a class=\"new-movie\" href=\"(?<episodeRef>(?<seasonRef>(?<movieRef>/series/(?<moviePageId>.+))/.+)/.+)/\" title=\"(?<title>.+)\">");
     private static final Pattern EPISODE_TITLE_TAG_PATTERN = Pattern.compile("<div class=\"title\">");
     private static final Pattern DATE_TAG_PATTERN = Pattern.compile("<div class=\"date\">(?<date>.+)</div>");
     private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<posterLink>.+)\" />");
@@ -39,10 +39,10 @@ public class LostfilmProvider extends AbstractMovieProvider {
 
     @Override
     public void retrieveData() throws Exception {
-        URI address = URI.create(SITE);
+        URI siteAddress = URI.create(SITE);
 
         DataRecord.Builder dataRecordBuilder = new DataRecord.Builder();
-        dataRecordBuilder.site(address);
+        dataRecordBuilder.site(siteAddress);
         dataRecordBuilder.episodeState(State.RELEASED);
 
         try (BufferedReader reader = createHtmlReader()) {
@@ -53,9 +53,9 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     dataRecordBuilder
                             .moviePageId(movieMatcher.group("moviePageId"))
                             .movieTitle(movieMatcher.group("title"))
-                            .moviePath(movieMatcher.group("moviePath"))
-                            .seasonPath(movieMatcher.group("seasonPath"))
-                            .episodePath(movieMatcher.group("episodePath"));
+                            .moviePath(siteAddress.resolve(movieMatcher.group("movieRef")))
+                            .seasonPath(siteAddress.resolve(movieMatcher.group("seasonRef")))
+                            .episodePath(siteAddress.resolve(movieMatcher.group("episodeRef")));
                 } else {
                     continue;
                 }
@@ -88,7 +88,7 @@ public class LostfilmProvider extends AbstractMovieProvider {
 
                 Matcher posterLinkMatcher = IMG_TAG_PATTERN.matcher(reader.readLine());
                 if (posterLinkMatcher.find()) {
-                    dataRecordBuilder.moviePosterLink(URI.create(posterLinkMatcher.group("posterLink")));
+                    dataRecordBuilder.moviePosterLink(siteAddress.resolve(posterLinkMatcher.group("posterLink")));
                 } else {
                     continue;
                 }
