@@ -1,5 +1,6 @@
 package moviechecker.lostfilm;
 
+import moviechecker.database.State;
 import moviechecker.datasource.provider.AbstractMovieProvider;
 import moviechecker.datasource.provider.DataRecord;
 
@@ -21,11 +22,12 @@ public class LostfilmProvider extends AbstractMovieProvider {
 
     private static final String SITE = "https://www.lostfilmtv5.site";
 
-    private static final Pattern NEW_MOVIE_TAG_PATTERN = Pattern.compile("<a class=\"new-movie\" href=\"(?<href>.+)\" title=\"(?<title>.+)\">");
+    private static final Pattern NEW_MOVIE_TAG_PATTERN = Pattern
+            .compile("<a class=\"new-movie\" href=\"(?<moviePath>/series/(?<moviePageId>.+))(?<seasonPath>/.+)(?<episodePath>/.+)/\" title=\"(?<title>.+)\">");
     private static final Pattern EPISODE_TITLE_TAG_PATTERN = Pattern.compile("<div class=\"title\">");
     private static final Pattern DATE_TAG_PATTERN = Pattern.compile("<div class=\"date\">(?<date>.+)</div>");
-    private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<poster>.+)\">");
-    private static final Pattern ID_PATTERN = Pattern.compile("(?<season>\\d+) сезон (?<episode>\\d+) серия");
+    private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<poster>.+)\" />");
+    private static final Pattern ID_PATTERN = Pattern.compile("(?<seasonNumber>\\d+) сезон (?<episodeTitle>(?<episodeNumber>\\d+) серия)");
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -38,20 +40,21 @@ public class LostfilmProvider extends AbstractMovieProvider {
     public void retrieveData() throws Exception {
         URI address = URI.create(SITE);
 
-        // Use Builder to fill data.
         DataRecord.Builder dataRecordBuilder = new DataRecord.Builder();
         dataRecordBuilder.site(address);
+        dataRecordBuilder.episodeState(State.RELEASED);
 
         try (BufferedReader reader = createHtmlReader()) {
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 Matcher movieMatcher = NEW_MOVIE_TAG_PATTERN.matcher(inputLine);
                 if (movieMatcher.find()) {
-                    String href = movieMatcher.group("href");
-                    dataRecordBuilder.movieTitle(movieMatcher.group("title"))
-                            .movieLink(URI.create(href))
-                            .seasonLink(URI.create(href))
-                            .episodeLink(URI.create(href));
+                    dataRecordBuilder
+                            .moviePageId(movieMatcher.group("moviePageId"))
+                            .movieTitle(movieMatcher.group("title"))
+                            .movieLink(URI.create(movieMatcher.group("moviePath")))
+                            .seasonLink(URI.create(movieMatcher.group("seasonPath")))
+                            .episodeLink(URI.create(movieMatcher.group("episodePath")));
                 } else {
                     continue;
                 }
@@ -61,8 +64,10 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     String line = reader.readLine().trim();
                     Matcher idMatcher = ID_PATTERN.matcher(line);
                     if(idMatcher.find()) {
-                        dataRecordBuilder.seasonNumber(Integer.parseInt(idMatcher.group("season")))
-                                .episodeNumber(Integer.parseInt(idMatcher.group("episode")));
+                        dataRecordBuilder
+                                .seasonNumber(Integer.parseInt(idMatcher.group("seasonNumber")))
+                                .episodeNumber(Integer.parseInt(idMatcher.group("episodeNumber")))
+                                .episodeTitle(idMatcher.group("episodeTitle"));
                         reader.readLine(); // skip closing tag line
                     } else {
                         continue;
@@ -81,9 +86,8 @@ public class LostfilmProvider extends AbstractMovieProvider {
                 }
 
                 Matcher posterMatcher = IMG_TAG_PATTERN.matcher(reader.readLine());
-                // TODO: regex not work for single line
                 if (posterMatcher.find()) {
-                    dataRecordBuilder.moviePosterLink(URI.create(posterMatcher.group("poster")));
+                    dataRecordBuilder.moviePosterLink(URI.create(posterMatcher.group("posterPath")));
                 } else {
                     continue;
                 }
