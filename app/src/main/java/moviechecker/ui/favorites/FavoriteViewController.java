@@ -32,7 +32,7 @@ public class FavoriteViewController {
 	}
 
 	public void openInBrowser(Favorite favorite) {
-		tools.openInBrowser(favorite.getMovie().getSite().getLink().resolve(favorite.getMovie().getLink()));
+		tools.openInBrowser(favorite.getMovie().getSite().getLink().resolve(favorite.getMovie().getPath()));
 	}
 
 }

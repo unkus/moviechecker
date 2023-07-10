@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public record DataRecord(URI siteAddress,
                          String moviePageId,
                          String movieTitle,
-                         URI movieLink,
+                         String movieLink,
                          URI moviePosterLink,
                          Integer seasonNumber,
-                         URI seasonLink,
+                         String seasonLink,
                          Integer episodeNumber,
                          String episodeTitle,
-                         URI episodeLink,
+                         String episodeLink,
                          State episodeState,
                          LocalDateTime episodeDate) {
 
@@ -37,13 +37,13 @@ public record DataRecord(URI siteAddress,
         private URI siteAddress;
         private String moviePageId;
         private String movieTitle;
-        private URI movieLink;
+        private String movieLink;
         private URI moviePosterLink;
         private Integer seasonNumber;
-        private URI seasonLink;
+        private String seasonLink;
         private Integer episodeNumber;
         private String episodeTitle;
-        private URI episodeLink;
+        private String episodeLink;
         private State episodeState;
         private LocalDateTime episodeDate;
 
@@ -62,7 +62,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder movieLink(URI movieLink) {
+        public Builder moviePath(String movieLink) {
             this.movieLink = movieLink;
             return this;
         }
@@ -77,7 +77,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder seasonLink(URI seasonLink) {
+        public Builder seasonPath(String seasonLink) {
             this.seasonLink = seasonLink;
             return this;
         }
@@ -92,7 +92,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder episodeLink(URI episodeLink) {
+        public Builder episodePath(String episodeLink) {
             this.episodeLink = episodeLink;
             return this;
         }

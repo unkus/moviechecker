@@ -81,7 +81,7 @@ public class MainTest {
         assertNotNull(sites);
 
         URI address = URI.create("https://site.one");
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.one"));
+        Optional<Site> siteOpt = sites.findByAddress(address);
         assertTrue(siteOpt.isPresent(), "Expected site not found");
 
         Site site = siteOpt.get();

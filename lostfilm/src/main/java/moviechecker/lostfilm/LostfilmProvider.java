@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,14 +27,14 @@ public class LostfilmProvider extends AbstractMovieProvider {
             .compile("<a class=\"new-movie\" href=\"(?<moviePath>/series/(?<moviePageId>.+))(?<seasonPath>/.+)(?<episodePath>/.+)/\" title=\"(?<title>.+)\">");
     private static final Pattern EPISODE_TITLE_TAG_PATTERN = Pattern.compile("<div class=\"title\">");
     private static final Pattern DATE_TAG_PATTERN = Pattern.compile("<div class=\"date\">(?<date>.+)</div>");
-    private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<poster>.+)\" />");
+    private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<posterLink>.+)\" />");
     private static final Pattern ID_PATTERN = Pattern.compile("(?<seasonNumber>\\d+) сезон (?<episodeTitle>(?<episodeNumber>\\d+) серия)");
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private BufferedReader createHtmlReader() throws IOException {
         URL url = new URL(SITE);
-        return new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+        return new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
     }
 
     @Override
@@ -52,9 +53,9 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     dataRecordBuilder
                             .moviePageId(movieMatcher.group("moviePageId"))
                             .movieTitle(movieMatcher.group("title"))
-                            .movieLink(URI.create(movieMatcher.group("moviePath")))
-                            .seasonLink(URI.create(movieMatcher.group("seasonPath")))
-                            .episodeLink(URI.create(movieMatcher.group("episodePath")));
+                            .moviePath(movieMatcher.group("moviePath"))
+                            .seasonPath(movieMatcher.group("seasonPath"))
+                            .episodePath(movieMatcher.group("episodePath"));
                 } else {
                     continue;
                 }
@@ -85,9 +86,9 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     continue;
                 }
 
-                Matcher posterMatcher = IMG_TAG_PATTERN.matcher(reader.readLine());
-                if (posterMatcher.find()) {
-                    dataRecordBuilder.moviePosterLink(URI.create(posterMatcher.group("posterPath")));
+                Matcher posterLinkMatcher = IMG_TAG_PATTERN.matcher(reader.readLine());
+                if (posterLinkMatcher.find()) {
+                    dataRecordBuilder.moviePosterLink(URI.create(posterLinkMatcher.group("posterLink")));
                 } else {
                     continue;
                 }

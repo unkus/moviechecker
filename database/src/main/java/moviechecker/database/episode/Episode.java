@@ -8,7 +8,6 @@ import java.util.Optional;
 import jakarta.persistence.*;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.season.Season;
-import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.State;
 
 @Entity
@@ -30,8 +29,7 @@ public class Episode {
 	private String title;
 
 	@Column(nullable = false)
-	@Convert(converter = UriPersistanceConverter.class)
-	private URI link;
+	private String path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.ORDINAL)
@@ -78,12 +76,12 @@ public class Episode {
 		this.title = title;
 	}
 
-	public URI getLink() {
-		return link;
+	public String getPath() {
+		return path;
 	}
 
-	public void setLink(URI link) {
-		this.link = link;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public State getState() {

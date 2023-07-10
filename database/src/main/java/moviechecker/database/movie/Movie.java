@@ -5,22 +5,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.season.Season;
 import moviechecker.database.site.Site;
-import moviechecker.database.converters.UriPersistanceConverter;
 
 @Entity
 @Table(name = "movie", uniqueConstraints = @UniqueConstraint(columnNames = { "site_id", "page_id" }))
@@ -41,8 +29,7 @@ public class Movie {
 	private String title;
 
 	@Column(nullable = false)
-	@Convert(converter = UriPersistanceConverter.class)
-	private URI link;
+	private String path;
 
 	@Column(name = "poster_link")
 	@Convert(converter = UriPersistanceConverter.class)
@@ -80,12 +67,12 @@ public class Movie {
 		this.title = title;
 	}
 
-	public URI getLink() {
-		return link;
+	public String getPath() {
+		return path;
 	}
 
-	public void setLink(URI link) {
-		this.link = link;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public URI getPosterLink() { return posterLink; }

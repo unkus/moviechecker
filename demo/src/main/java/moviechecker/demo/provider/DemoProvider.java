@@ -66,14 +66,14 @@ public class DemoProvider extends AbstractMovieProvider {
                 if (movieMatcher.find()) {
                     dataRecordBuilder.moviePageId(movieMatcher.group("pageId"))
                             .movieTitle(movieMatcher.group("title"))
-                            .movieLink(URI.create(movieMatcher.group("href")));
+                            .moviePath(movieMatcher.group("href"));
 
                     Matcher episodeMatcher = EPISODE_PATTERN.matcher(reader.readLine());
                     if (episodeMatcher.find()) {
                         dataRecordBuilder.seasonNumber(Integer.parseInt(episodeMatcher.group("season")))
                                 .episodeNumber(Integer.parseInt(episodeMatcher.group("episode")))
                                 .episodeTitle(episodeMatcher.group("title"))
-                                .episodeLink(URI.create(episodeMatcher.group("href")));
+                                .episodePath(episodeMatcher.group("href"));
                     } else {
                         throw new Exception("Unable to parse data for episode.");
                     }
