@@ -6,13 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
+import moviechecker.database.Linkable;
 import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.season.Season;
 import moviechecker.database.site.Site;
 
 @Entity
 @Table(name = "movie", uniqueConstraints = @UniqueConstraint(columnNames = { "site_id", "page_id" }))
-public class Movie {
+public class Movie implements Linkable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

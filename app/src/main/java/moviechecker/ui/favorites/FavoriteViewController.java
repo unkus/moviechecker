@@ -1,5 +1,6 @@
 package moviechecker.ui.favorites;
 
+import moviechecker.ui.ItemController;
 import moviechecker.ui.Tools;
 import moviechecker.ui.events.FavoriteRemovedEvent;
 import org.slf4j.Logger;
@@ -13,7 +14,7 @@ import moviechecker.database.favorite.FavoriteRepository;
 import moviechecker.ui.episodes.ExpectedEpisodeView;
 
 @Component
-public class FavoriteViewController {
+public class FavoriteViewController extends ItemController {
 
 	private Logger logger = LoggerFactory.getLogger(ExpectedEpisodeView.class);
 

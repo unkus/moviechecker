@@ -1,5 +1,6 @@
 package moviechecker.ui;
 
+import moviechecker.database.Linkable;
 import moviechecker.database.episode.Episode;
 import moviechecker.database.movie.Movie;
 import moviechecker.database.season.Season;
@@ -12,7 +13,7 @@ public class ItemController {
 
     @Autowired private Tools tools;
 
-    public void onClick$Open(Episode episode) {
-        tools.openInBrowser(episode.getLink());
+    public void onClick$Open(Linkable obj) {
+        tools.openInBrowser(obj.getLink());
     }
 }

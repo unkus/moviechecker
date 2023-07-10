@@ -15,12 +15,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import moviechecker.database.Linkable;
 import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.movie.Movie;
 
 @Entity
 @Table(name = "site")
-public class Site {
+public class Site implements Linkable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
