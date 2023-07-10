@@ -1,9 +1,8 @@
 package moviechecker.ui.episodes;
 
-import java.util.Optional;
+import java.util.*;
 
 import moviechecker.ui.ItemController;
-import moviechecker.ui.Tools;
 import moviechecker.ui.events.FavoriteAddedEvent;
 import moviechecker.ui.events.FavoriteRemovedEvent;
 import org.slf4j.Logger;
@@ -28,21 +27,18 @@ public class EpisodeViewController extends ItemController {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private Tools tools;
-
-    @Autowired
     private FavoriteRepository favorites;
 
     @Autowired
     private EpisodeRepository episodes;
 
-    public void addToFavorites(Movie movie) {
+    public void onClick$AddToFavorites(Movie movie) {
         Favorite favorite = new Favorite(movie);
         favorites.save(favorite);
         applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
     }
 
-    public void removeFromFavorites(Movie movie) {
+    public void onClick$RemoveFromFavorites(Movie movie) {
         Optional<Favorite> favoriteOpt = favorites.findByMovie(movie);
         favoriteOpt.ifPresent(favorite -> {
             favorites.delete(favorite);

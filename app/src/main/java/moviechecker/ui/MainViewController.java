@@ -15,7 +15,7 @@ public class MainViewController {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public void checkUpdates() {
+    public void onClick$RequestData() {
         applicationEventPublisher.publishEvent(new DataRequestedEvent(this));
     }
 

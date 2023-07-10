@@ -83,18 +83,18 @@ public abstract class EpisodeView extends JPanel {
         favoriteCheckBox.addActionListener(event -> {
             JCheckBox cb = (JCheckBox) event.getSource();
             if (cb.isSelected()) {
-                controller.addToFavorites(episode.getMovie());
+                controller.onClick$AddToFavorites(episode.getMovie());
             } else {
-                controller.removeFromFavorites(episode.getMovie());
+                controller.onClick$RemoveFromFavorites(episode.getMovie());
             }
         });
 
         titleLabel.setText(episode.getSeason().getTitle());
         openButton.setText((episode.getState().equals(State.VIEWED) ? "✓" : "") + episode.getTitle());
-        openButton.addActionListener(event -> onOpenButtonClicked(controller, episode));
+        openButton.addActionListener(event -> onClick$Open(controller, episode));
     }
 
-    protected void onOpenButtonClicked(EpisodeViewController controller, Episode episode) {
-        controller.openInBrowser(episode);
+    protected void onClick$Open(EpisodeViewController controller, Episode episode) {
+        controller.onClick$Open(episode);
     }
 }

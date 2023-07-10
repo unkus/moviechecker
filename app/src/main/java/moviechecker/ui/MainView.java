@@ -7,7 +7,6 @@ import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
 import moviechecker.datasource.events.DataErrorEvent;
 import moviechecker.datasource.events.DataReceivedEvent;
-import moviechecker.datasource.events.DataRequestedEvent;
 import moviechecker.ui.episodes.EpisodeViewController;
 import moviechecker.ui.favorites.FavoriteViewController;
 import moviechecker.ui.episodes.ExpectedEpisodeView;
@@ -27,35 +26,37 @@ import java.awt.*;
 @Component
 public class MainView extends JFrame {
 
-    private final JPanel contentPane;
+    private JPanel contentPane;
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     private MainViewController mainViewController;
-
     @Autowired
     private EpisodeViewController episodeViewController;
-
     @Autowired
     private FavoriteViewController favoriteViewController;
 
     @Autowired
-    private EpisodeRepository episodes;
-
+    private EpisodeRepository episodeRepository;
     @Autowired
-    private FavoriteRepository favorites;
+    private FavoriteRepository favoriteRepository;
 
-    private final JPanel releasedPanel;
+    private JPanel releasedPanel;
 
-    private final JPanel expectedPanel;
+    private JPanel expectedPanel;
 
-    private final JPanel favoritesPanel;
+    private JPanel favoritesPanel;
 
     public MainView() {
+        initComponent();
+    }
+
+    private void initComponent() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 450, 300);
+
         contentPane = new JPanel();
         contentPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 
@@ -94,20 +95,18 @@ public class MainView extends JFrame {
         contentPane.add(actionPanel, BorderLayout.EAST);
 
         JButton checkButton = new JButton("Проверить");
-        checkButton.addActionListener(event -> {
-            applicationEventPublisher.publishEvent(new DataRequestedEvent(this));
-        });
+        checkButton.addActionListener(event -> mainViewController.onClick$RequestData());
         actionPanel.setLayout(new BoxLayout(actionPanel, BoxLayout.Y_AXIS));
         actionPanel.add(checkButton);
     }
 
     private void updateView() {
-        episodes.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
+        episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
             ReleasedEpisodeView view = new ReleasedEpisodeView(episodeViewController);
             releasedPanel.add(view);
             view.bind(episode);
         });
-        episodes.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
+        episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
             ExpectedEpisodeView view = new ExpectedEpisodeView(episodeViewController);
             expectedPanel.add(view);
             view.bind(episode);
@@ -117,9 +116,7 @@ public class MainView extends JFrame {
 
     @PostConstruct
     public void postConstruct() {
-        favorites.findAll().forEach(favorite -> {
-            favoritesPanel.add(new FavoriteView(favorite, favoriteViewController));
-        });
+        favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
 
         updateView();
     }
@@ -159,9 +156,7 @@ public class MainView extends JFrame {
 //			});
 
             favoritesPanel.removeAll();
-            favorites.findAll().forEach(favorite -> {
-                favoritesPanel.add(new FavoriteView(favorite, favoriteViewController));
-            });
+            favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
 
             contentPane.validate();
         });
@@ -169,8 +164,6 @@ public class MainView extends JFrame {
 
     @EventListener
     public void handleDataError(DataErrorEvent event) {
-        SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(contentPane, event.getSource(), "Data error", JOptionPane.ERROR_MESSAGE);
-        });
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(contentPane, event.getSource(), "Data error", JOptionPane.ERROR_MESSAGE));
     }
 }

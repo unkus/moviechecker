@@ -1,6 +1,5 @@
 package moviechecker.database.episode;
 
-import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -63,7 +62,7 @@ public class Episode {
 	public Movie getMovie() {
 		return season.getMovie();
 	}
-	
+
 	public int getNumber() {
 		return number;
 	}

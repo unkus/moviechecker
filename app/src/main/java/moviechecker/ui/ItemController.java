@@ -12,7 +12,7 @@ public class ItemController {
 
     @Autowired private Tools tools;
 
-    public void openInBrowser(Episode episode) {
+    public void onClick$Open(Episode episode) {
         Site site = episode.getMovie().getSite();
         Movie movie = episode.getMovie();
         Season season = episode.getSeason();
