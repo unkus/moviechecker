@@ -54,6 +54,7 @@ public class Season implements Linkable {
 		return number;
 	}
 
+	@Transient
 	public String getTitle() {
 		return movie.getTitle() + (number > 1 ? " " + number : "");
 	}
