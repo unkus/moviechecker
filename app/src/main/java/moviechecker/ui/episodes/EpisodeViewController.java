@@ -47,17 +47,17 @@ public class EpisodeViewController extends ItemController {
     }
 
     public boolean isInFavorites(Episode episode) {
-        return favorites.existsByMovie(episode.getMovie());
+        return favorites.existsByMovie(episode.getSeason().getMovie());
     }
 
     public void markViewed(Episode episode) {
         episode.setState(State.VIEWED);
         episodes.save(episode);
 
-        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getMovie());
-        favoriteOpt.ifPresent(favorite -> {
+        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
+            favoriteOpt.ifPresent(favorite -> {
             favorite.setLastViewed(episode);
-            favorites.save(favorite);
+                favorites.save(favorite);
         });
     }
 

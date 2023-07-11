@@ -54,17 +54,8 @@ public class Episode implements Linkable {
 		this.number = number;
 	}
 
-	@Transient
-	public boolean isNew() {
-		return id == 0;
-	}
-
 	public Season getSeason() {
 		return season;
-	}
-
-	public Movie getMovie() {
-		return season.getMovie();
 	}
 
 	public int getNumber() {
