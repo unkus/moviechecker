@@ -11,18 +11,14 @@ import org.springframework.stereotype.Component;
 
 import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
-import moviechecker.ui.episodes.ExpectedEpisodeView;
 
 @Component
 public class FavoriteViewController extends ItemController {
 
-	private Logger logger = LoggerFactory.getLogger(ExpectedEpisodeView.class);
+	private Logger logger = LoggerFactory.getLogger(FavoriteViewController.class);
 
 	@Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-	
-	@Autowired
-	private Tools tools;
 	
 	@Autowired
 	private FavoriteRepository favorites;

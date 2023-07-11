@@ -7,9 +7,9 @@ import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
 import moviechecker.datasource.events.DataErrorEvent;
 import moviechecker.datasource.events.DataReceivedEvent;
+import moviechecker.ui.episodes.EpisodeView;
 import moviechecker.ui.episodes.EpisodeViewController;
 import moviechecker.ui.favorites.FavoriteViewController;
-import moviechecker.ui.episodes.ExpectedEpisodeView;
 import moviechecker.ui.episodes.ReleasedEpisodeView;
 import moviechecker.ui.events.FavoriteAddedEvent;
 import moviechecker.ui.events.FavoriteRemovedEvent;
@@ -102,12 +102,12 @@ public class MainView extends JFrame {
 
     private void updateView() {
         episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-            ReleasedEpisodeView view = new ReleasedEpisodeView(episodeViewController);
+            EpisodeView view = new ReleasedEpisodeView(episodeViewController);
             releasedPanel.add(view);
             view.bind(episode);
         });
         episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
-            ExpectedEpisodeView view = new ExpectedEpisodeView(episodeViewController);
+            EpisodeView view = new EpisodeView(episodeViewController);
             expectedPanel.add(view);
             view.bind(episode);
         });

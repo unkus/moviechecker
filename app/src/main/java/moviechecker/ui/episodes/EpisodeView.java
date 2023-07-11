@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public abstract class EpisodeView extends JPanel {
+public class EpisodeView extends JPanel {
 
     private static final DateTimeFormatter yesterdayFormat = DateTimeFormatter.ofPattern("Вчера в HH:mm");
     private static final DateTimeFormatter todayFormat = DateTimeFormatter.ofPattern("Сегодня в HH:mm");
@@ -25,7 +25,7 @@ public abstract class EpisodeView extends JPanel {
     private JLabel titleLabel;
     private JButton openButton;
 
-    public EpisodeView(EpisodeViewController controller) {
+    public EpisodeView(final EpisodeViewController controller) {
         this.controller = controller;
 
         initComponent();
@@ -62,7 +62,7 @@ public abstract class EpisodeView extends JPanel {
         actionPanel.add(openButton);
     }
 
-    public void bind(Episode episode) {
+    public void bind(final Episode episode) {
         episode.getDate().ifPresent(date -> {
             LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
             LocalDateTime yesterday = today.minusDays(1);
@@ -94,7 +94,7 @@ public abstract class EpisodeView extends JPanel {
         openButton.addActionListener(event -> onClick$Open(controller, episode));
     }
 
-    protected void onClick$Open(EpisodeViewController controller, Episode episode) {
+    public void onClick$Open(final EpisodeViewController controller, final Episode episode) {
         controller.onClick$Open(episode);
     }
 }

@@ -9,7 +9,7 @@ public class ReleasedEpisodeView extends EpisodeView {
 	}
 
 	@Override
-	protected void onClick$Open(final EpisodeViewController controller, final Episode episode) {
+	public void onClick$Open(final EpisodeViewController controller, final Episode episode) {
 		super.onClick$Open(controller, episode);
 		controller.markViewed(episode);
 	}
