@@ -83,9 +83,9 @@ public class EpisodeView extends JPanel {
         favoriteCheckBox.addActionListener(event -> {
             JCheckBox cb = (JCheckBox) event.getSource();
             if (cb.isSelected()) {
-                controller.onClick$AddToFavorites(episode.getSeason().getMovie());
+                controller.onClick$AddToFavorites(episode);
             } else {
-                controller.onClick$RemoveFromFavorites(episode.getSeason().getMovie());
+                controller.onClick$RemoveFromFavorites(episode);
             }
         });
 

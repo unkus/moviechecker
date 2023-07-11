@@ -32,14 +32,14 @@ public class EpisodeViewController extends ItemController {
     @Autowired
     private EpisodeRepository episodes;
 
-    public void onClick$AddToFavorites(Movie movie) {
-        Favorite favorite = new Favorite(movie);
+    public void onClick$AddToFavorites(Episode episode) {
+        Favorite favorite = new Favorite(episode.getSeason().getMovie());
         favorites.save(favorite);
         applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
     }
 
-    public void onClick$RemoveFromFavorites(Movie movie) {
-        Optional<Favorite> favoriteOpt = favorites.findByMovie(movie);
+    public void onClick$RemoveFromFavorites(Episode episode) {
+        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
         favoriteOpt.ifPresent(favorite -> {
             favorites.delete(favorite);
             applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
@@ -55,9 +55,14 @@ public class EpisodeViewController extends ItemController {
         episodes.save(episode);
 
         Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
-            favoriteOpt.ifPresent(favorite -> {
-            favorite.setLastViewed(episode);
-                favorites.save(favorite);
+        favoriteOpt.ifPresent(favorite -> {
+            Optional<Episode> lastViewedOpt = favorite.getLastViewed();
+            lastViewedOpt.ifPresent(lastViewed -> {
+                if (episode.getNumber() > lastViewed.getNumber()) {
+                    favorite.setLastViewed(episode);
+                    favorites.save(favorite);
+                }
+            });
         });
     }
 
