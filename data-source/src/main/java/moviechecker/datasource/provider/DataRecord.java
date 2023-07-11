@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public record DataRecord(URI siteAddress,
                          String moviePageId,
                          String movieTitle,
-                         URI movieLink,
+                         URI moviePath,
                          URI moviePosterLink,
                          Integer seasonNumber,
-                         URI seasonLink,
+                         URI seasonPath,
                          Integer episodeNumber,
                          String episodeTitle,
-                         URI episodeLink,
+                         URI episodePath,
                          State episodeState,
                          LocalDateTime episodeDate) {
 
@@ -22,13 +22,13 @@ public record DataRecord(URI siteAddress,
         this(builder.siteAddress,
                 builder.moviePageId,
                 builder.movieTitle,
-                builder.movieLink,
+                builder.moviePath,
                 builder.moviePosterLink,
                 builder.seasonNumber,
-                builder.seasonLink,
+                builder.seasonPath,
                 builder.episodeNumber,
                 builder.episodeTitle,
-                builder.episodeLink,
+                builder.episodePath,
                 builder.episodeState,
                 builder.episodeDate);
     }
@@ -37,13 +37,13 @@ public record DataRecord(URI siteAddress,
         private URI siteAddress;
         private String moviePageId;
         private String movieTitle;
-        private URI movieLink;
+        private URI moviePath;
         private URI moviePosterLink;
         private Integer seasonNumber;
-        private URI seasonLink;
+        private URI seasonPath;
         private Integer episodeNumber;
         private String episodeTitle;
-        private URI episodeLink;
+        private URI episodePath;
         private State episodeState;
         private LocalDateTime episodeDate;
 
@@ -62,8 +62,8 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder moviePath(URI movieLink) {
-            this.movieLink = movieLink;
+        public Builder moviePath(URI moviePath) {
+            this.moviePath = moviePath;
             return this;
         }
 
@@ -77,8 +77,8 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder seasonPath(URI seasonLink) {
-            this.seasonLink = seasonLink;
+        public Builder seasonPath(URI seasonPath) {
+            this.seasonPath = seasonPath;
             return this;
         }
 
@@ -92,8 +92,8 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder episodePath(URI episodeLink) {
-            this.episodeLink = episodeLink;
+        public Builder episodePath(URI episodePath) {
+            this.episodePath = episodePath;
             return this;
         }
 
@@ -117,8 +117,8 @@ public record DataRecord(URI siteAddress,
             if (movieTitle == null) {
                 throw new Exception("Movie title is not set");
             }
-            if (movieLink == null) {
-                throw new Exception("Movie link is not set");
+            if (moviePath == null) {
+                throw new Exception("Movie path is not set");
             }
             if (moviePosterLink == null) {
                 throw new Exception("Movie poster link is not set");
@@ -126,8 +126,8 @@ public record DataRecord(URI siteAddress,
             if (seasonNumber == null) {
                 throw new Exception("Season number is not set");
             }
-            if (seasonLink == null) {
-                throw new Exception("Season link is not set");
+            if (seasonPath == null) {
+                throw new Exception("Season path is not set");
             }
             if (episodeNumber == null) {
                 throw new Exception("Episode number is not set");
@@ -135,8 +135,8 @@ public record DataRecord(URI siteAddress,
             if (episodeTitle == null) {
                 throw new Exception("Episode title is not set");
             }
-            if (episodeLink == null) {
-                throw new Exception("Episode link is not set");
+            if (episodePath == null) {
+                throw new Exception("Episode path is not set");
             }
             if (episodeState == null) {
                 throw new Exception("State is not set");

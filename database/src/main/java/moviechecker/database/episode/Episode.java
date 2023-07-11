@@ -32,7 +32,7 @@ public class Episode implements Linkable {
 
 	@Column(nullable = false)
 	@Convert(converter = UriPersistanceConverter.class)
-	private URI link;
+	private URI path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.ORDINAL)
@@ -70,12 +70,12 @@ public class Episode implements Linkable {
 		this.title = title;
 	}
 
-	public URI getLink() {
-		return link;
+	public URI getPath() {
+		return path;
 	}
 
-	public void setLink(URI link) {
-		this.link = link;
+	public void setPath(URI path) {
+		this.path = path;
 	}
 
 	public State getState() {
@@ -94,9 +94,10 @@ public class Episode implements Linkable {
 		this.date = date;
 	}
 
+	@Transient
 	@Override
-	public String toString() {
-		return season + " " + title + " " + date;
+	public URI getLink() {
+		return getSeason().getMovie().getSite().getAddress().resolve(path);
 	}
 
 	@Override

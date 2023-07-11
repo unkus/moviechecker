@@ -28,7 +28,7 @@ public class Season implements Linkable {
 
 	@Column(nullable = false)
 	@Convert(converter = UriPersistanceConverter.class)
-	private URI link;
+	private URI path;
 
 	@OneToMany(mappedBy = "season", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	private Set<Episode> episodes = new HashSet<>();
@@ -58,9 +58,15 @@ public class Season implements Linkable {
 		return movie.getTitle() + (number > 1 ? " " + number : "");
 	}
 
-	public URI getLink() { return link; }
+	public URI getPath() { return path; }
 
-	public void setLink(URI link) { this.link = link; }
+	public void setPath(URI path) { this.path = path; }
+
+	@Transient
+	@Override
+	public URI getLink() {
+		return movie.getSite().getAddress().resolve(path);
+	}
 
 	public Set<Episode> getEpisodes() {
 		return episodes;

@@ -31,7 +31,7 @@ public class Movie implements Linkable {
 
 	@Column(nullable = false)
 	@Convert(converter = UriPersistanceConverter.class)
-	private URI link;
+	private URI path;
 
 	@Column(name = "poster_link")
 	@Convert(converter = UriPersistanceConverter.class)
@@ -69,12 +69,12 @@ public class Movie implements Linkable {
 		this.title = title;
 	}
 
-	public URI getLink() {
-		return link;
+	public URI getPath() {
+		return path;
 	}
 
-	public void setLink(URI link) {
-		this.link = link;
+	public void setPath(URI path) {
+		this.path = path;
 	}
 
 	public URI getPosterLink() { return posterLink; }
@@ -83,6 +83,12 @@ public class Movie implements Linkable {
 
 	public Set<Season> getSeasons() {
 		return seasons;
+	}
+
+	@Transient
+	@Override
+	public URI getLink() {
+		return site.getAddress().resolve(path);
 	}
 
 	@Override

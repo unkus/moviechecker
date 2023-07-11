@@ -159,7 +159,7 @@ public class MainTest {
         Episode episode = episodeOpt.get();
         assertEquals(11, episode.getNumber());
         assertEquals(season, episode.getSeason());
-        assertEquals(movie, episode.getMovie());
+        assertEquals(movie, episode.getSeason().getMovie());
 
         assertTrue(episodes.findBySeasonAndNumber(season, 20).isEmpty(), "Unexpected episode found");
     }

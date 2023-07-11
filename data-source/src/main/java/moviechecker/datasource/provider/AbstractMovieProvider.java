@@ -55,17 +55,17 @@ public abstract class AbstractMovieProvider implements MovieProvider {
 
         Movie movie = movies.findBySiteAndPageId(site, record.moviePageId()).orElse(new Movie(site, record.moviePageId()));
         movie.setTitle(record.movieTitle());
-        movie.setLink(record.movieLink());
+        movie.setPath(record.moviePath());
         movie.setPosterLink(record.moviePosterLink());
         movies.save(movie);
 
         Season season = seasons.findByMovieAndNumber(movie, record.seasonNumber()).orElse(new Season(movie, record.seasonNumber()));
-        season.setLink(record.seasonLink());
+        season.setPath(record.seasonPath());
         seasons.save(season);
 
         Episode episode = episodes.findBySeasonAndNumber(season, record.episodeNumber()).orElse(new Episode(season, record.episodeNumber()));
         episode.setTitle(record.episodeTitle());
-        episode.setLink(record.episodeLink());
+        episode.setPath(record.episodePath());
         if (episode.getState() != State.VIEWED) {
             episode.setState(record.episodeState());
         }

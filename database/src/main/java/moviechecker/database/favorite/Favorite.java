@@ -74,6 +74,6 @@ public class Favorite implements Linkable {
 	@Transient
 	@Override
 	public URI getLink() {
-		return movie.getLink();
+		return movie.getSite().getAddress().resolve(movie.getPath());
 	}
 }

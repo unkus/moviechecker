@@ -5,23 +5,14 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import moviechecker.database.Linkable;
 import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.movie.Movie;
 
 @Entity
 @Table(name = "site")
-public class Site implements Linkable {
+public class Site {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,10 +43,6 @@ public class Site implements Linkable {
 
 	public Set<Movie> getMovies() {
 		return movies;
-	}
-
-	public URI getLink() {
-		return address;
 	}
 
 	@Override
