@@ -6,14 +6,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import moviechecker.database.Linkable;
-import moviechecker.database.converters.UriPersistanceConverter;
-import moviechecker.database.episode.Episode;
-import moviechecker.database.movie.Movie;
+import moviechecker.database.episode.EpisodeEntity;
+import moviechecker.database.movie.MovieEntity;
+import moviechecker.di.Season;
 
 @Entity
 @Table(name = "season", uniqueConstraints = @UniqueConstraint(columnNames = { "movie_id", "number"}))
-public class Season implements Linkable {
+public class SeasonEntity implements Season {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,32 +20,31 @@ public class Season implements Linkable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "movie_id", referencedColumnName = "id", nullable = false, updatable = false)
-	private Movie movie;
+	private MovieEntity movie;
 
 	@Column(nullable = false, updatable = false)
 	private int number;
 
 	@Column(nullable = false)
-	@Convert(converter = UriPersistanceConverter.class)
-	private URI path;
+	private String path;
 
 	@OneToMany(mappedBy = "season", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<Episode> episodes = new HashSet<>();
+	private Set<EpisodeEntity> episodes = new HashSet<>();
 	
 	/**
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public Season() {
+	public SeasonEntity() {
 		super();
 	}
 	
-	public Season(Movie movie, int number) {
+	public SeasonEntity(MovieEntity movie, int number) {
 		this.movie = movie;
 		this.number = number;
 	}
 
-	public Movie getMovie() {
+	public MovieEntity getMovie() {
 		return movie;
 	}
 
@@ -59,18 +57,22 @@ public class Season implements Linkable {
 		return movie.getTitle() + (number > 1 ? " " + number : "");
 	}
 
-	public URI getPath() { return path; }
+	public String getPath() { return path; }
 
-	public void setPath(URI path) { this.path = path; }
+	public void setPath(String path) { this.path = path; }
 
 	@Transient
-	@Override
 	public URI getLink() {
 		return movie.getSite().getAddress().resolve(path);
 	}
 
-	public Set<Episode> getEpisodes() {
+	public Set<EpisodeEntity> getEpisodes() {
 		return episodes;
+	}
+
+	@Override
+	public String toString() {
+		return movie.toString() + ": Сезон " + number;
 	}
 
 	@Override
@@ -86,13 +88,8 @@ public class Season implements Linkable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Season other = (Season) obj;
+		SeasonEntity other = (SeasonEntity) obj;
 		return Objects.equals(movie, other.movie) && number == other.number;
-	}
-
-	@Override
-	public String toString() {
-		return movie + " Сезон " + number;
 	}
 	
 }

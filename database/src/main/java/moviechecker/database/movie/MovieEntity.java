@@ -6,14 +6,14 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import moviechecker.database.Linkable;
 import moviechecker.database.converters.UriPersistanceConverter;
-import moviechecker.database.season.Season;
-import moviechecker.database.site.Site;
+import moviechecker.database.season.SeasonEntity;
+import moviechecker.database.site.SiteEntity;
+import moviechecker.di.Movie;
 
 @Entity
 @Table(name = "movie", uniqueConstraints = @UniqueConstraint(columnNames = { "site_id", "page_id" }))
-public class Movie implements Linkable {
+public class MovieEntity implements Movie {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Movie implements Linkable {
 
 	@ManyToOne
 	@JoinColumn(name = "site_id", referencedColumnName = "id", nullable = false, updatable = false)
-	private Site site;
+	private SiteEntity site;
 
 	@Column(name = "page_id", nullable = false, updatable = false)
 	private String pageId;
@@ -30,30 +30,29 @@ public class Movie implements Linkable {
 	private String title;
 
 	@Column(nullable = false)
-	@Convert(converter = UriPersistanceConverter.class)
-	private URI path;
+	private String path;
 
 	@Column(name = "poster_link")
 	@Convert(converter = UriPersistanceConverter.class)
 	private URI posterLink;
 	
 	@OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<Season> seasons = new HashSet<>();
+	private Set<SeasonEntity> seasons = new HashSet<>();
 	
 	/**
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public Movie() {
+	public MovieEntity() {
 		super();
 	}
 	
-	public Movie(Site site, String pageId) {
+	public MovieEntity(SiteEntity site, String pageId) {
 		this.site = site;
 		this.pageId = pageId;
 	}
 	
-	public Site getSite() {
+	public SiteEntity getSite() {
 		return site;
 	}
 
@@ -69,11 +68,11 @@ public class Movie implements Linkable {
 		this.title = title;
 	}
 
-	public URI getPath() {
+	public String getPath() {
 		return path;
 	}
 
-	public void setPath(URI path) {
+	public void setPath(String path) {
 		this.path = path;
 	}
 
@@ -81,19 +80,18 @@ public class Movie implements Linkable {
 
 	public void setPosterLink(URI posterLink) { this.posterLink = posterLink; }
 
-	public Set<Season> getSeasons() {
+	public Set<SeasonEntity> getSeasons() {
 		return seasons;
 	}
 
 	@Transient
-	@Override
 	public URI getLink() {
 		return site.getAddress().resolve(path);
 	}
 
 	@Override
 	public String toString() {
-		return site + " " + title;
+		return site.toString() + ": " + title;
 	}
 
 	@Override
@@ -109,7 +107,7 @@ public class Movie implements Linkable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Movie other = (Movie) obj;
+		MovieEntity other = (MovieEntity) obj;
 		return Objects.equals(site, other.site) && Objects.equals(pageId, other.pageId);
 	}
 

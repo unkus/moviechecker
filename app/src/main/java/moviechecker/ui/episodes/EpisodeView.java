@@ -1,7 +1,7 @@
 package moviechecker.ui.episodes;
 
-import moviechecker.database.State;
-import moviechecker.database.episode.Episode;
+import moviechecker.di.Episode;
+import moviechecker.di.State;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -18,12 +18,12 @@ public class EpisodeView extends JPanel {
     private static final DateTimeFormatter tomorrowFormat = DateTimeFormatter.ofPattern("Завтра в HH:mm");
     private static final DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("d-MM-yyyy, HH:mm");
 
-    private final EpisodeViewController controller;
+    protected final EpisodeViewController controller;
 
-    private JLabel dateLabel;
-    private JCheckBox favoriteCheckBox;
-    private JLabel titleLabel;
-    private JButton openButton;
+    protected JLabel dateLabel;
+    protected JCheckBox favoriteCheckBox;
+    protected JLabel titleLabel;
+    protected JButton openButton;
 
     public EpisodeView(final EpisodeViewController controller) {
         this.controller = controller;
@@ -63,26 +63,24 @@ public class EpisodeView extends JPanel {
     }
 
     public void bind(final Episode episode) {
-        episode.getDate().ifPresent(date -> {
-            LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
-            LocalDateTime yesterday = today.minusDays(1);
-            LocalDateTime tomorrow = today.plusDays(1);
+        LocalDateTime date = episode.getReleaseDate();
+        LocalDateTime today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime yesterday = today.minusDays(1);
+        LocalDateTime tomorrow = today.plusDays(1);
 
-            if (date.isBefore(yesterday) || date.isAfter(tomorrow)) {
-                dateLabel.setText(date.format(dateTimeFormat));
-            } else if (date.isBefore(today)) {
-                dateLabel.setText(date.format(yesterdayFormat));
-            } else if (date.isBefore(tomorrow)) {
-                dateLabel.setText(date.format(todayFormat));
-            } else {
-                dateLabel.setText(date.format(tomorrowFormat));
+        if (date.isBefore(yesterday) || date.isAfter(tomorrow)) {
+            dateLabel.setText(date.format(dateTimeFormat));
+        } else if (date.isBefore(today)) {
+            dateLabel.setText(date.format(yesterdayFormat));
+        } else if (date.isBefore(tomorrow)) {
+            dateLabel.setText(date.format(todayFormat));
+        } else {
+            dateLabel.setText(date.format(tomorrowFormat));
             }
-        });
 
         favoriteCheckBox.setSelected(controller.isInFavorites(episode));
         favoriteCheckBox.addActionListener(event -> {
-            JCheckBox cb = (JCheckBox) event.getSource();
-            if (cb.isSelected()) {
+            if (favoriteCheckBox.isSelected()) {
                 controller.onClick$AddToFavorites(episode);
             } else {
                 controller.onClick$RemoveFromFavorites(episode);
@@ -91,10 +89,10 @@ public class EpisodeView extends JPanel {
 
         titleLabel.setText(episode.getSeason().getTitle());
         openButton.setText((episode.getState().equals(State.VIEWED) ? "✓" : "") + episode.getTitle());
-        openButton.addActionListener(event -> onClick$Open(controller, episode));
+        openButton.addActionListener(event -> onClick$Open(episode));
     }
 
-    public void onClick$Open(final EpisodeViewController controller, final Episode episode) {
+    public void onClick$Open(final Episode episode) {
         controller.onClick$Open(episode);
     }
 }

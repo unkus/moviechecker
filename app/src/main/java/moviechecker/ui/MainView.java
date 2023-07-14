@@ -1,12 +1,12 @@
 package moviechecker.ui;
 
 import jakarta.annotation.PostConstruct;
-import moviechecker.database.State;
+import moviechecker.database.api.events.DataErrorEvent;
+import moviechecker.database.api.events.DataReceivedEvent;
+import moviechecker.di.Favorite;
+import moviechecker.di.State;
 import moviechecker.database.episode.EpisodeRepository;
-import moviechecker.database.favorite.Favorite;
 import moviechecker.database.favorite.FavoriteRepository;
-import moviechecker.datasource.events.DataErrorEvent;
-import moviechecker.datasource.events.DataReceivedEvent;
 import moviechecker.ui.episodes.EpisodeView;
 import moviechecker.ui.episodes.EpisodeViewController;
 import moviechecker.ui.favorites.FavoriteViewController;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.util.stream.StreamSupport;
 
 @Component
 public class MainView extends JFrame {
@@ -101,22 +102,39 @@ public class MainView extends JFrame {
     }
 
     private void updateView() {
-        episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-            EpisodeView view = new ReleasedEpisodeView(episodeViewController);
-            releasedPanel.add(view);
-            view.bind(episode);
-        });
-        episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
-            EpisodeView view = new EpisodeView(episodeViewController);
-            expectedPanel.add(view);
-            view.bind(episode);
-        });
+        StreamSupport.stream(episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).spliterator(), false)
+                .forEach(episode -> {
+                    EpisodeView view = new ReleasedEpisodeView(episodeViewController);
+                    releasedPanel.add(view);
+                    view.bind(episode);
+                });
+        StreamSupport.stream(episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).spliterator(), false)
+                .forEach(episode -> {
+                    EpisodeView view = new EpisodeView(episodeViewController);
+                    releasedPanel.add(view);
+                    view.bind(episode);
+                });
+
+//        episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
+//            EpisodeView view = new ReleasedEpisodeView(episodeViewController);
+//            releasedPanel.add(view);
+//            view.bind(episode);
+//        });
+//        episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
+//            EpisodeView view = new EpisodeView(episodeViewController);
+//            expectedPanel.add(view);
+//            view.bind(episode);
+//        });
         contentPane.validate();
     }
 
     @PostConstruct
     public void postConstruct() {
-        favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
+        StreamSupport.stream(favoriteRepository.findAll().spliterator(), false)
+                .map(favorite -> new FavoriteView(favorite, favoriteViewController))
+                .forEach(favoritesPanel::add);
+
+        //favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
 
         updateView();
     }
@@ -156,7 +174,7 @@ public class MainView extends JFrame {
 //			});
 
             favoritesPanel.removeAll();
-            favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
+//            favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
 
             contentPane.validate();
         });

@@ -1,6 +1,6 @@
 package moviechecker.ui;
 
-import moviechecker.datasource.events.DataRequestedEvent;
+import moviechecker.database.api.events.DataRequestedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

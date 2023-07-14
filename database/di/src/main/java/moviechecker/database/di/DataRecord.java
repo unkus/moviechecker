@@ -1,6 +1,6 @@
-package moviechecker.datasource.provider;
+package moviechecker.database.di;
 
-import moviechecker.database.State;
+import moviechecker.di.State;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -8,13 +8,13 @@ import java.time.LocalDateTime;
 public record DataRecord(URI siteAddress,
                          String moviePageId,
                          String movieTitle,
-                         URI moviePath,
+                         String moviePath,
                          URI moviePosterLink,
                          Integer seasonNumber,
-                         URI seasonPath,
+                         String seasonPath,
                          Integer episodeNumber,
                          String episodeTitle,
-                         URI episodePath,
+                         String episodePath,
                          State episodeState,
                          LocalDateTime episodeDate) {
 
@@ -37,13 +37,13 @@ public record DataRecord(URI siteAddress,
         private URI siteAddress;
         private String moviePageId;
         private String movieTitle;
-        private URI moviePath;
+        private String moviePath;
         private URI moviePosterLink;
         private Integer seasonNumber;
-        private URI seasonPath;
+        private String seasonPath;
         private Integer episodeNumber;
         private String episodeTitle;
-        private URI episodePath;
+        private String episodePath;
         private State episodeState;
         private LocalDateTime episodeDate;
 
@@ -62,7 +62,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder moviePath(URI moviePath) {
+        public Builder moviePath(String moviePath) {
             this.moviePath = moviePath;
             return this;
         }
@@ -77,7 +77,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder seasonPath(URI seasonPath) {
+        public Builder seasonPath(String seasonPath) {
             this.seasonPath = seasonPath;
             return this;
         }
@@ -92,7 +92,7 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder episodePath(URI episodePath) {
+        public Builder episodePath(String episodePath) {
             this.episodePath = episodePath;
             return this;
         }

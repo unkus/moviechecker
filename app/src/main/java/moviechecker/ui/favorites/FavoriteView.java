@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
-import moviechecker.database.favorite.Favorite;
+import moviechecker.di.Favorite;
 
 public class FavoriteView extends JPanel {
 
@@ -19,7 +19,7 @@ public class FavoriteView extends JPanel {
 		add(titlePanel, BorderLayout.CENTER);
 		titlePanel.setLayout(new BorderLayout(0, 0));
 
-		JLabel titleLabel = new JLabel(favorite.getMovie().getTitle());
+		JLabel titleLabel = new JLabel(favorite.getTitle());
 		titlePanel.add(titleLabel);
 
 		JPanel actionPanel = new JPanel();

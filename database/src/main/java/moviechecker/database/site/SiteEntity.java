@@ -6,13 +6,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import jakarta.persistence.*;
-import moviechecker.database.Linkable;
 import moviechecker.database.converters.UriPersistanceConverter;
-import moviechecker.database.movie.Movie;
+import moviechecker.database.movie.MovieEntity;
+import moviechecker.di.Site;
 
 @Entity
 @Table(name = "site")
-public class Site {
+public class SiteEntity implements Site {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,17 +23,17 @@ public class Site {
 	private URI address;
 
 	@OneToMany(mappedBy = "site", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-	private Set<Movie> movies = new HashSet<>();
+	private Set<MovieEntity> movies = new HashSet<>();
 
 	/**
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public Site() {
+	public SiteEntity() {
 		super();
 	}
 	
-	public Site(URI address) {
+	public SiteEntity(URI address) {
 		this.address = address;
 	}
 	
@@ -41,7 +41,7 @@ public class Site {
 		return address;
 	}
 
-	public Set<Movie> getMovies() {
+	public Set<MovieEntity> getMovies() {
 		return movies;
 	}
 
@@ -63,7 +63,7 @@ public class Site {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Site other = (Site) obj;
+		SiteEntity other = (SiteEntity) obj;
 		return Objects.equals(address, other.address);
 	}
 

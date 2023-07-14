@@ -1,17 +1,19 @@
 package moviechecker.database.favorite;
 
+import jakarta.persistence.*;
+import moviechecker.database.episode.EpisodeEntity;
+import moviechecker.database.movie.MovieEntity;
+import moviechecker.di.Episode;
+import moviechecker.di.Favorite;
+import moviechecker.di.Movie;
+
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
-import jakarta.persistence.*;
-import moviechecker.database.Linkable;
-import moviechecker.database.episode.Episode;
-import moviechecker.database.movie.Movie;
-
 @Entity
 @Table(name = "favorite")
-public class Favorite implements Linkable {
+public class FavoriteEntity implements Favorite {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,21 +21,21 @@ public class Favorite implements Linkable {
 	
 	@OneToOne(optional = false)
 	@JoinColumn(name = "movie_id", unique = true, nullable = false, updatable = false)
-	private Movie movie;
+	private MovieEntity movie;
 	
 	@OneToOne(optional = true)
 	@JoinColumn(name = "episode_id")
-	private Episode lastViewed;
+	private EpisodeEntity lastViewed;
 	
 	/**
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public Favorite() {
+	public FavoriteEntity() {
 		super();
 	}
 	
-	public Favorite(Movie movie) {
+	public FavoriteEntity(MovieEntity movie) {
 		this.movie = movie;
 	}
 	
@@ -45,13 +47,24 @@ public class Favorite implements Linkable {
 		return Optional.ofNullable(lastViewed);
 	}
 
-	public void setLastViewed(Episode lastViewed) {
+	@Override
+	@Transient
+	public String getTitle() {
+		return movie.getTitle();
+	}
+
+	public void setLastViewed(EpisodeEntity lastViewed) {
 		this.lastViewed = lastViewed;
+	}
+
+	@Transient
+	public URI getLink() {
+		return movie.getSite().getAddress().resolve(movie.getPath());
 	}
 
 	@Override
 	public String toString() {
-		return movie.toString();
+		return "Favorite: " + movie.toString();
 	}
 
 	@Override
@@ -67,13 +80,8 @@ public class Favorite implements Linkable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Favorite other = (Favorite) obj;
+		FavoriteEntity other = (FavoriteEntity) obj;
 		return Objects.equals(movie, other.movie);
 	}
 
-	@Transient
-	@Override
-	public URI getLink() {
-		return movie.getSite().getAddress().resolve(movie.getPath());
-	}
 }

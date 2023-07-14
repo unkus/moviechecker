@@ -3,18 +3,15 @@ package moviechecker.database.episode;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Optional;
 
 import jakarta.persistence.*;
-import moviechecker.database.Linkable;
-import moviechecker.database.converters.UriPersistanceConverter;
-import moviechecker.database.movie.Movie;
-import moviechecker.database.season.Season;
-import moviechecker.database.State;
+import moviechecker.database.season.SeasonEntity;
+import moviechecker.di.Episode;
+import moviechecker.di.State;
 
 @Entity
 @Table(name = "episode", uniqueConstraints = @UniqueConstraint(columnNames = { "season_id", "number" }))
-public class Episode implements Linkable {
+public class EpisodeEntity implements Episode {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +19,7 @@ public class Episode implements Linkable {
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "season_id", referencedColumnName = "id", nullable = false, updatable = false)
-	private Season season;
+	private SeasonEntity season;
 
 	@Column(nullable = false, updatable = false)
 	private int number;
@@ -31,8 +28,7 @@ public class Episode implements Linkable {
 	private String title;
 
 	@Column(nullable = false)
-	@Convert(converter = UriPersistanceConverter.class)
-	private URI path;
+	private String path;
 	
 	@Column(nullable = false)
 	@Enumerated(EnumType.ORDINAL)
@@ -45,16 +41,16 @@ public class Episode implements Linkable {
 	 * @deprecated Only for hibernate usage.
 	 */
 	@Deprecated
-	public Episode() {
+	public EpisodeEntity() {
 		super();
 	}
 	
-	public Episode(Season season, int number) {
+	public EpisodeEntity(SeasonEntity season, int number) {
 		this.season = season;
 		this.number = number;
 	}
 
-	public Season getSeason() {
+	public SeasonEntity getSeason() {
 		return season;
 	}
 
@@ -70,11 +66,11 @@ public class Episode implements Linkable {
 		this.title = title;
 	}
 
-	public URI getPath() {
+	public String getPath() {
 		return path;
 	}
 
-	public void setPath(URI path) {
+	public void setPath(String path) {
 		this.path = path;
 	}
 
@@ -86,8 +82,8 @@ public class Episode implements Linkable {
 		this.state = state;
 	}
 
-	public Optional<LocalDateTime> getDate() {
-		return Optional.ofNullable(date);
+	public LocalDateTime getReleaseDate() {
+		return date;
 	}
 
 	public void setDate(LocalDateTime date) {
@@ -95,9 +91,13 @@ public class Episode implements Linkable {
 	}
 
 	@Transient
-	@Override
 	public URI getLink() {
 		return getSeason().getMovie().getSite().getAddress().resolve(path);
+	}
+
+	@Override
+	public String toString() {
+		return season.toString() + ": " + title;
 	}
 
 	@Override
@@ -113,7 +113,7 @@ public class Episode implements Linkable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Episode other = (Episode) obj;
+		EpisodeEntity other = (EpisodeEntity) obj;
 		return Objects.equals(season, other.season) && number == other.number;
 	}
 	

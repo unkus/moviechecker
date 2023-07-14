@@ -1,22 +1,15 @@
 package moviechecker.ui.episodes;
 
-import java.util.*;
-
+import moviechecker.di.CheckerDatabase;
+import moviechecker.di.Episode;
 import moviechecker.ui.ItemController;
-import moviechecker.ui.events.FavoriteAddedEvent;
-import moviechecker.ui.events.FavoriteRemovedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import moviechecker.database.episode.Episode;
-import moviechecker.database.favorite.Favorite;
-import moviechecker.database.movie.Movie;
-import moviechecker.database.State;
 import moviechecker.database.episode.EpisodeRepository;
-import moviechecker.database.favorite.FavoriteRepository;
 
 @Component
 public class EpisodeViewController extends ItemController {
@@ -27,43 +20,42 @@ public class EpisodeViewController extends ItemController {
     private ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    private FavoriteRepository favorites;
+    private CheckerDatabase database;
 
     @Autowired
     private EpisodeRepository episodes;
 
     public void onClick$AddToFavorites(Episode episode) {
-        Favorite favorite = new Favorite(episode.getSeason().getMovie());
-        favorites.save(favorite);
-        applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
+        database.addToFavorites(episode);
+//        applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
     }
 
     public void onClick$RemoveFromFavorites(Episode episode) {
-        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
-        favoriteOpt.ifPresent(favorite -> {
-            favorites.delete(favorite);
-            applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
-        });
+        database.removeFromFavorite(episode);
+//        applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
     }
 
     public boolean isInFavorites(Episode episode) {
-        return favorites.existsByMovie(episode.getSeason().getMovie());
+        return database.checkFavorites(episode);
     }
 
     public void markViewed(Episode episode) {
-        episode.setState(State.VIEWED);
-        episodes.save(episode);
-
-        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
-        favoriteOpt.ifPresent(favorite -> {
-            Optional<Episode> lastViewedOpt = favorite.getLastViewed();
-            lastViewedOpt.ifPresent(lastViewed -> {
-                if (episode.getNumber() > lastViewed.getNumber()) {
-                    favorite.setLastViewed(episode);
-                    favorites.save(favorite);
-                }
-            });
-        });
+//        episode.setState(State.VIEWED);
+//        episodes.save(episode);
+//
+//        Optional<Favorite> favoriteOpt = favorites.findByMovie(episode.getSeason().getMovie());
+//        favoriteOpt.ifPresent(favorite -> {
+//            Optional<Episode> lastViewedOpt = favorite.getLastViewed();
+//            lastViewedOpt.ifPresent(lastViewed -> {
+//                if (episode.getNumber() > lastViewed.getNumber()) {
+//                    favorite.setLastViewed(episode);
+//                    favorites.save(favorite);
+//                }
+//            });
+//        });
+//
+//        // inform view about change
+//        applicationEventPublisher.publishEvent(new EpisodeViewedEvent(episode));
     }
 
 }

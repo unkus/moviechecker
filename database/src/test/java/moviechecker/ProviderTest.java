@@ -1,16 +1,16 @@
 package moviechecker;
 
-import moviechecker.database.episode.Episode;
-import moviechecker.database.episode.EpisodeRepository;
-import moviechecker.database.movie.Movie;
-import moviechecker.database.movie.MovieRepository;
-import moviechecker.database.season.Season;
-import moviechecker.database.season.SeasonRepository;
-import moviechecker.database.site.Site;
-import moviechecker.database.site.SiteRepository;
-import moviechecker.datasource.events.DataReceivedEvent;
-import moviechecker.datasource.events.DataRequestedEvent;
+import moviechecker.database.api.events.DataReceivedEvent;
+import moviechecker.database.api.events.DataRequestedEvent;
 import moviechecker.datasource.provider.MovieProvider;
+import moviechecker.database.episode.EpisodeEntity;
+import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.database.movie.MovieEntity;
+import moviechecker.database.movie.MovieRepository;
+import moviechecker.database.season.SeasonEntity;
+import moviechecker.database.season.SeasonRepository;
+import moviechecker.database.site.SiteEntity;
+import moviechecker.database.site.SiteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,13 +62,13 @@ public class ProviderTest {
         verify(component, timeout(1000).times(1)).handleDataReceived(any(DataReceivedEvent.class));
 
         // Check whether the data were stored.
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://test.test"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://test.test"));
         Assertions.assertTrue(siteOpt.isPresent());
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(siteOpt.get(), "movie");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(siteOpt.get(), "movie");
         Assertions.assertTrue(movieOpt.isPresent());
-        Optional<Season> seasonOpt = seasons.findByMovieAndNumber(movieOpt.get(), 1);
+        Optional<SeasonEntity> seasonOpt = seasons.findByMovieAndNumber(movieOpt.get(), 1);
         Assertions.assertTrue(seasonOpt.isPresent());
-        Optional<Episode> episodeOpt = episodes.findBySeasonAndNumber(seasonOpt.get(), 1);
+        Optional<EpisodeEntity> episodeOpt = episodes.findBySeasonAndNumber(seasonOpt.get(), 1);
         Assertions.assertTrue(episodeOpt.isPresent());
     }
 

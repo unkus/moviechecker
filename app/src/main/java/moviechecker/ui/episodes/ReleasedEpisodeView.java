@@ -1,6 +1,7 @@
 package moviechecker.ui.episodes;
 
-import moviechecker.database.episode.Episode;
+import moviechecker.di.Episode;
+import org.springframework.context.event.EventListener;
 
 public class ReleasedEpisodeView extends EpisodeView {
 
@@ -9,8 +10,13 @@ public class ReleasedEpisodeView extends EpisodeView {
 	}
 
 	@Override
-	public void onClick$Open(final EpisodeViewController controller, final Episode episode) {
-		super.onClick$Open(controller, episode);
+	public void onClick$Open(final Episode episode) {
+		super.onClick$Open(episode);
 		controller.markViewed(episode);
+	}
+
+	@EventListener
+	public void handleEpisodeViewed(EpisodeViewedEvent event) {
+		bind((Episode) event.getSource());
 	}
 }

@@ -1,9 +1,5 @@
 package moviechecker.lostfilm;
 
-import moviechecker.database.State;
-import moviechecker.datasource.provider.AbstractMovieProvider;
-import moviechecker.datasource.provider.DataRecord;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,12 +10,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import moviechecker.database.di.DataRecord;
+import moviechecker.datasource.provider.MovieProvider;
+import moviechecker.di.State;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LostfilmProvider extends AbstractMovieProvider {
+public class LostfilmProvider implements MovieProvider {
 
     private static final String SITE = "https://www.lostfilmtv5.site";
 
@@ -38,7 +40,8 @@ public class LostfilmProvider extends AbstractMovieProvider {
     }
 
     @Override
-    public void retrieveData() throws Exception {
+    public List<DataRecord> retrieveData() throws Exception {
+        List<DataRecord> recordList = new LinkedList<>();
         URI siteAddress = URI.create(SITE);
 
         DataRecord.Builder dataRecordBuilder = new DataRecord.Builder();
@@ -53,9 +56,9 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     dataRecordBuilder
                             .moviePageId(movieMatcher.group("moviePageId"))
                             .movieTitle(movieMatcher.group("title"))
-                            .moviePath(siteAddress.resolve(movieMatcher.group("movieRef")))
-                            .seasonPath(siteAddress.resolve(movieMatcher.group("seasonRef")))
-                            .episodePath(siteAddress.resolve(movieMatcher.group("episodeRef")));
+                            .moviePath(movieMatcher.group("movieRef"))
+                            .seasonPath(movieMatcher.group("seasonRef"))
+                            .episodePath(movieMatcher.group("episodeRef"));
                 } else {
                     continue;
                 }
@@ -93,8 +96,9 @@ public class LostfilmProvider extends AbstractMovieProvider {
                     continue;
                 }
 
-                saveRecord(dataRecordBuilder.build());
+                recordList.add(dataRecordBuilder.build());
             }
         }
+        return recordList;
     }
 }

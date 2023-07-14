@@ -14,12 +14,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import moviechecker.database.episode.Episode;
-import moviechecker.database.favorite.Favorite;
-import moviechecker.database.movie.Movie;
-import moviechecker.database.season.Season;
-import moviechecker.database.site.Site;
-import moviechecker.database.State;
+import moviechecker.database.episode.EpisodeEntity;
+import moviechecker.database.favorite.FavoriteEntity;
+import moviechecker.database.movie.MovieEntity;
+import moviechecker.database.season.SeasonEntity;
+import moviechecker.database.site.SiteEntity;
+import moviechecker.di.State;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,12 +48,12 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateAscTest() {
         assertNotNull(episodes);
 
-        Iterable<Episode> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
-        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+        Iterable<EpisodeEntity> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
+        List<EpisodeEntity> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<Episode> sortedList = actualList.stream()
-                .sorted(Comparator.comparing(item -> item.getDate().orElse(null),
+        List<EpisodeEntity> sortedList = actualList.stream()
+                .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> left != null ? (right != null ? left.compareTo(right) : 1) : -1))
                 .toList();
 
@@ -64,12 +64,12 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateDescTest() {
         assertNotNull(episodes);
 
-        Iterable<Episode> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
-        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+        Iterable<EpisodeEntity> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
+        List<EpisodeEntity> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<Episode> sortedList = actualList.stream()
-                .sorted(Comparator.comparing(item -> item.getDate().orElse(null),
+        List<EpisodeEntity> sortedList = actualList.stream()
+                .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> (left != null ? (right != null ? left.compareTo(right) : 1) : -1) * -1))
                 .toList();
 
@@ -81,10 +81,10 @@ public class MainTest {
         assertNotNull(sites);
 
         URI address = URI.create("https://site.one");
-        Optional<Site> siteOpt = sites.findByAddress(address);
+        Optional<SiteEntity> siteOpt = sites.findByAddress(address);
         assertTrue(siteOpt.isPresent(), "Expected site not found");
 
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
         assertEquals(address, site.getAddress());
 
         assertTrue(sites.findByAddress(URI.create("https://site.three")).isEmpty(), "Unexpected site found");
@@ -95,14 +95,14 @@ public class MainTest {
         assertNotNull(sites);
         assertNotNull(movies);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.one"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.one"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
 
-        Movie movie = movieOpt.get();
+        MovieEntity movie = movieOpt.get();
         assertEquals(site, movie.getSite());
         assertEquals("movie_one", movie.getPageId(), "Unexpected movie found");
 
@@ -116,18 +116,18 @@ public class MainTest {
         assertNotNull(seasons);
         assertNotNull(episodes);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.one"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.one"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        Movie movie = movieOpt.get();
+        MovieEntity movie = movieOpt.get();
 
-        Optional<Season> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
+        Optional<SeasonEntity> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
         assertTrue(seasonOpt.isPresent(), "Expected season not found");
 
-        Season season = seasonOpt.get();
+        SeasonEntity season = seasonOpt.get();
         assertEquals(1, season.getNumber());
         assertEquals(movie, season.getMovie());
 
@@ -141,22 +141,22 @@ public class MainTest {
         assertNotNull(seasons);
         assertNotNull(episodes);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.one"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.one"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        Movie movie = movieOpt.get();
+        MovieEntity movie = movieOpt.get();
 
-        Optional<Season> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
+        Optional<SeasonEntity> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
         assertTrue(seasonOpt.isPresent(), "Expected season not found");
-        Season season = seasonOpt.get();
+        SeasonEntity season = seasonOpt.get();
 
-        Optional<Episode> episodeOpt = episodes.findBySeasonAndNumber(season, 11);
+        Optional<EpisodeEntity> episodeOpt = episodes.findBySeasonAndNumber(season, 11);
         assertTrue(episodeOpt.isPresent(), "Expected episode not found");
 
-        Episode episode = episodeOpt.get();
+        EpisodeEntity episode = episodeOpt.get();
         assertEquals(11, episode.getNumber());
         assertEquals(season, episode.getSeason());
         assertEquals(movie, episode.getSeason().getMovie());
@@ -170,23 +170,23 @@ public class MainTest {
         assertNotNull(movies);
         assertNotNull(favorites);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.two"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.two"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        Movie movieOne = movieOpt.get();
+        MovieEntity movieOne = movieOpt.get();
 
-        Optional<Favorite> favoriteMovieOpt = favorites.findByMovie(movieOne);
+        Optional<FavoriteEntity> favoriteMovieOpt = favorites.findByMovie(movieOne);
         assertTrue(favoriteMovieOpt.isPresent(), "No favorites found by movie");
 
-        Favorite favorite = favoriteMovieOpt.get();
+        FavoriteEntity favorite = favoriteMovieOpt.get();
         assertEquals(movieOne, favorite.getMovie(), "Unexpected movie returned as favorite");
 
-        Optional<Movie> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
+        Optional<MovieEntity> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
         assertTrue(movieThreeOpt.isPresent(), "Expected movie not found");
-        Movie movieThree = movieThreeOpt.get();
+        MovieEntity movieThree = movieThreeOpt.get();
         assertTrue(favorites.findByMovie(movieThree).isEmpty(), "Unexpected favorite movie found but should not");
     }
 
@@ -196,19 +196,19 @@ public class MainTest {
         assertNotNull(movies);
         assertNotNull(favorites);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.two"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.two"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        Movie movieOne = movieOpt.get();
+        MovieEntity movieOne = movieOpt.get();
 
         assertTrue(favorites.existsByMovie(movieOne), "Expected favorite movie not exists");
 
-        Optional<Movie> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
+        Optional<MovieEntity> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
         assertTrue(movieThreeOpt.isPresent(), "Expected movie not found");
-        Movie movieThree = movieThreeOpt.get();
+        MovieEntity movieThree = movieThreeOpt.get();
         assertFalse(favorites.existsByMovie(movieThree),
                 "Positive result has been achieved instead of negative one");
     }
@@ -221,26 +221,26 @@ public class MainTest {
         assertNotNull(episodes);
         assertNotNull(favorites);
 
-        Optional<Site> siteOpt = sites.findByAddress(URI.create("https://site.one"));
+        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.one"));
         assertTrue(siteOpt.isPresent(), "Expected site not found");
-        Site site = siteOpt.get();
+        SiteEntity site = siteOpt.get();
 
-        Optional<Movie> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
+        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        Movie movie = movieOpt.get();
+        MovieEntity movie = movieOpt.get();
 
-        Optional<Season> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
+        Optional<SeasonEntity> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
         assertTrue(seasonOpt.isPresent(), "Expected season not found");
-        Season season = seasonOpt.get();
+        SeasonEntity season = seasonOpt.get();
 
-        Optional<Episode> episode11Opt = episodes.findBySeasonAndNumber(season, 11);
+        Optional<EpisodeEntity> episode11Opt = episodes.findBySeasonAndNumber(season, 11);
         assertTrue(episode11Opt.isPresent(), "Expected episode not found");
-        Episode episode11 = episode11Opt.get();
+        EpisodeEntity episode11 = episode11Opt.get();
         assertTrue(favorites.existsByLastViewed(episode11), "Expected favorite movie not exists");
 
-        Optional<Episode> episode12Opt = episodes.findBySeasonAndNumber(season, 12);
+        Optional<EpisodeEntity> episode12Opt = episodes.findBySeasonAndNumber(season, 12);
         assertTrue(episode12Opt.isPresent(), "Expected episode not found");
-        Episode episode12 = episode12Opt.get();
+        EpisodeEntity episode12 = episode12Opt.get();
         assertFalse(favorites.existsByLastViewed(episode12), "Positive result reached instead negative");
     }
 }
