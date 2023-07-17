@@ -1,9 +1,9 @@
 package moviechecker.datasource.provider;
 
-import moviechecker.database.api.events.DataErrorEvent;
-import moviechecker.database.api.events.DataReceivedEvent;
-import moviechecker.database.api.events.DataRequestedEvent;
 import moviechecker.database.di.DataRecordPublisher;
+import moviechecker.di.events.DataErrorEvent;
+import moviechecker.di.events.DataReceivedEvent;
+import moviechecker.di.events.DataRequestedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;

@@ -9,6 +9,7 @@ import moviechecker.database.movie.MovieRepository;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteRepository;
 import moviechecker.database.favorite.FavoriteRepository;
+import moviechecker.di.Episode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,11 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateAscTest() {
         assertNotNull(episodes);
 
-        Iterable<EpisodeEntity> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
-        List<EpisodeEntity> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+        Iterable<Episode> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
+        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<EpisodeEntity> sortedList = actualList.stream()
+        List<Episode> sortedList = actualList.stream()
                 .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> left != null ? (right != null ? left.compareTo(right) : 1) : -1))
                 .toList();
@@ -64,11 +65,11 @@ public class MainTest {
     public void findAllByStateOrderByReleaseDateDescTest() {
         assertNotNull(episodes);
 
-        Iterable<EpisodeEntity> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
-        List<EpisodeEntity> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+        Iterable<Episode> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
+        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<EpisodeEntity> sortedList = actualList.stream()
+        List<Episode> sortedList = actualList.stream()
                 .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> (left != null ? (right != null ? left.compareTo(right) : 1) : -1) * -1))
                 .toList();
@@ -213,34 +214,4 @@ public class MainTest {
                 "Positive result has been achieved instead of negative one");
     }
 
-    @Test
-    public void existsByLastViewedTest() {
-        assertNotNull(sites);
-        assertNotNull(movies);
-        assertNotNull(seasons);
-        assertNotNull(episodes);
-        assertNotNull(favorites);
-
-        Optional<SiteEntity> siteOpt = sites.findByAddress(URI.create("https://site.one"));
-        assertTrue(siteOpt.isPresent(), "Expected site not found");
-        SiteEntity site = siteOpt.get();
-
-        Optional<MovieEntity> movieOpt = movies.findBySiteAndPageId(site, "movie_one");
-        assertTrue(movieOpt.isPresent(), "Expected movie not found");
-        MovieEntity movie = movieOpt.get();
-
-        Optional<SeasonEntity> seasonOpt = seasons.findByMovieAndNumber(movie, 1);
-        assertTrue(seasonOpt.isPresent(), "Expected season not found");
-        SeasonEntity season = seasonOpt.get();
-
-        Optional<EpisodeEntity> episode11Opt = episodes.findBySeasonAndNumber(season, 11);
-        assertTrue(episode11Opt.isPresent(), "Expected episode not found");
-        EpisodeEntity episode11 = episode11Opt.get();
-        assertTrue(favorites.existsByLastViewed(episode11), "Expected favorite movie not exists");
-
-        Optional<EpisodeEntity> episode12Opt = episodes.findBySeasonAndNumber(season, 12);
-        assertTrue(episode12Opt.isPresent(), "Expected episode not found");
-        EpisodeEntity episode12 = episode12Opt.get();
-        assertFalse(favorites.existsByLastViewed(episode12), "Positive result reached instead negative");
-    }
 }

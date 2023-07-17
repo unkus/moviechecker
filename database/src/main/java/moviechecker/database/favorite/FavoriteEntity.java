@@ -1,18 +1,16 @@
 package moviechecker.database.favorite;
 
 import jakarta.persistence.*;
-import moviechecker.database.episode.EpisodeEntity;
 import moviechecker.database.movie.MovieEntity;
-import moviechecker.di.Episode;
 import moviechecker.di.Favorite;
 import moviechecker.di.Movie;
 
 import java.net.URI;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "favorite")
+@EntityListeners(FavoriteDataListener.class)
 public class FavoriteEntity implements Favorite {
 
 	@Id
@@ -22,11 +20,7 @@ public class FavoriteEntity implements Favorite {
 	@OneToOne(optional = false)
 	@JoinColumn(name = "movie_id", unique = true, nullable = false, updatable = false)
 	private MovieEntity movie;
-	
-	@OneToOne(optional = true)
-	@JoinColumn(name = "episode_id")
-	private EpisodeEntity lastViewed;
-	
+
 	/**
 	 * @deprecated Only for hibernate usage.
 	 */
@@ -43,18 +37,10 @@ public class FavoriteEntity implements Favorite {
 		return movie;
 	}
 
-	public Optional<Episode> getLastViewed() {
-		return Optional.ofNullable(lastViewed);
-	}
-
 	@Override
 	@Transient
 	public String getTitle() {
 		return movie.getTitle();
-	}
-
-	public void setLastViewed(EpisodeEntity lastViewed) {
-		this.lastViewed = lastViewed;
 	}
 
 	@Transient
@@ -83,5 +69,4 @@ public class FavoriteEntity implements Favorite {
 		FavoriteEntity other = (FavoriteEntity) obj;
 		return Objects.equals(movie, other.movie);
 	}
-
 }

@@ -6,6 +6,7 @@ import moviechecker.di.State;
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -76,7 +77,7 @@ public class EpisodeView extends JPanel {
             dateLabel.setText(date.format(todayFormat));
         } else {
             dateLabel.setText(date.format(tomorrowFormat));
-            }
+        }
 
         favoriteCheckBox.setSelected(controller.isInFavorites(episode));
         favoriteCheckBox.addActionListener(event -> {
@@ -93,6 +94,6 @@ public class EpisodeView extends JPanel {
     }
 
     public void onClick$Open(final Episode episode) {
-        controller.onClick$Open(episode);
+        controller.onClick$Open(new LinkableEpisode(episode));
     }
 }

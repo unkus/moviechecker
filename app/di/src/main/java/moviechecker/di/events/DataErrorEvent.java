@@ -1,4 +1,4 @@
-package moviechecker.database.api.events;
+package moviechecker.di.events;
 
 import org.springframework.context.ApplicationEvent;
 

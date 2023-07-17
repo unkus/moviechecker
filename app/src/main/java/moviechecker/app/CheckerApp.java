@@ -17,12 +17,8 @@ public class CheckerApp implements ApplicationRunner {
 
 	private @Autowired MainView view;
 
-	private @Autowired CheckerDatabase database;
-
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
-		database.cleanup();
-
 		javax.swing.SwingUtilities.invokeLater(() -> {
 			view.setVisible(true);
 		});

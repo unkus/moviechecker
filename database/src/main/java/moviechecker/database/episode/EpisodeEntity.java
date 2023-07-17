@@ -11,6 +11,7 @@ import moviechecker.di.State;
 
 @Entity
 @Table(name = "episode", uniqueConstraints = @UniqueConstraint(columnNames = { "season_id", "number" }))
+@EntityListeners(EpisodeDataListener.class)
 public class EpisodeEntity implements Episode {
 
 	@Id

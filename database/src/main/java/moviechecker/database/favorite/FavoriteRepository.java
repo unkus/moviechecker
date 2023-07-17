@@ -15,6 +15,4 @@ public interface FavoriteRepository extends CrudRepository<FavoriteEntity, Long>
 //	@Query("SELECT CASE WHEN count(f)> 0 THEN true ELSE false END FROM FavoriteMovie f WHERE f.movie = :movie ")
 	boolean existsByMovie(MovieEntity movie);
 
-//	@Query("SELECT CASE WHEN count(f)> 0 THEN true ELSE false END FROM FavoriteMovie f WHERE f.lastViewed = :episode ")
-	boolean existsByLastViewed(EpisodeEntity episode);
 }

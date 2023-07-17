@@ -1,27 +1,35 @@
 package moviechecker.ui;
 
 import jakarta.annotation.PostConstruct;
-import moviechecker.database.api.events.DataErrorEvent;
-import moviechecker.database.api.events.DataReceivedEvent;
+import moviechecker.database.episode.EpisodeEntity;
+import moviechecker.database.favorite.FavoriteEntity;
+import moviechecker.di.CheckerDatabase;
+import moviechecker.di.Episode;
 import moviechecker.di.Favorite;
 import moviechecker.di.State;
 import moviechecker.database.episode.EpisodeRepository;
 import moviechecker.database.favorite.FavoriteRepository;
+import moviechecker.di.events.*;
 import moviechecker.ui.episodes.EpisodeView;
 import moviechecker.ui.episodes.EpisodeViewController;
 import moviechecker.ui.favorites.FavoriteViewController;
 import moviechecker.ui.episodes.ReleasedEpisodeView;
-import moviechecker.ui.events.FavoriteAddedEvent;
-import moviechecker.ui.events.FavoriteRemovedEvent;
 import moviechecker.ui.favorites.FavoriteView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StopWatch;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import java.awt.*;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 @Component
@@ -29,25 +37,19 @@ public class MainView extends JFrame {
 
     private JPanel contentPane;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private @Autowired ApplicationEventPublisher applicationEventPublisher;
 
-    @Autowired
-    private MainViewController mainViewController;
-    @Autowired
-    private EpisodeViewController episodeViewController;
-    @Autowired
-    private FavoriteViewController favoriteViewController;
+    private @Autowired MainViewController mainViewController;
+    private @Autowired EpisodeViewController episodeViewController;
+    private @Autowired FavoriteViewController favoriteViewController;
 
-    @Autowired
-    private EpisodeRepository episodeRepository;
-    @Autowired
-    private FavoriteRepository favoriteRepository;
+    private @Autowired EpisodeRepository episodeRepository;
+    private @Autowired FavoriteRepository favoriteRepository;
+
+    private @Autowired CheckerDatabase database;
 
     private JPanel releasedPanel;
-
     private JPanel expectedPanel;
-
     private JPanel favoritesPanel;
 
     public MainView() {
@@ -102,39 +104,40 @@ public class MainView extends JFrame {
     }
 
     private void updateView() {
-        StreamSupport.stream(episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).spliterator(), false)
-                .forEach(episode -> {
-                    EpisodeView view = new ReleasedEpisodeView(episodeViewController);
-                    releasedPanel.add(view);
-                    view.bind(episode);
-                });
-        StreamSupport.stream(episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).spliterator(), false)
-                .forEach(episode -> {
-                    EpisodeView view = new EpisodeView(episodeViewController);
-                    releasedPanel.add(view);
-                    view.bind(episode);
-                });
+        Iterable<Episode> released = episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED);
+        StreamSupport.stream(released.spliterator(), false)
+                .map(episodeViewController::getView)
+                .forEach(releasedPanel::add);
 
-//        episodeRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED).forEach(episode -> {
-//            EpisodeView view = new ReleasedEpisodeView(episodeViewController);
+//        released.forEach(episode -> {
+//            EpisodeView view = episodeViewController.getView(episode);
+//            view.bind(episode);
 //            releasedPanel.add(view);
-//            view.bind(episode);
 //        });
-//        episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED).forEach(episode -> {
-//            EpisodeView view = new EpisodeView(episodeViewController);
+
+        Iterable<Episode> expected = episodeRepository.findAllByStateOrderByDateAsc(State.EXPECTED);
+        StreamSupport.stream(expected.spliterator(), false)
+                .map(episodeViewController::getView)
+                .forEach(expectedPanel::add);
+
+//        expected.forEach(episode -> {
+//            EpisodeView view = episodeViewController.getView(episode);
+//            view.bind(episode);
 //            expectedPanel.add(view);
-//            view.bind(episode);
 //        });
+
         contentPane.validate();
     }
 
     @PostConstruct
     public void postConstruct() {
+        database.cleanup();
+
         StreamSupport.stream(favoriteRepository.findAll().spliterator(), false)
                 .map(favorite -> new FavoriteView(favorite, favoriteViewController))
                 .forEach(favoritesPanel::add);
 
-        //favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
+//        favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
 
         updateView();
     }
@@ -144,7 +147,6 @@ public class MainView extends JFrame {
         SwingUtilities.invokeLater(() -> {
             releasedPanel.removeAll();
             expectedPanel.removeAll();
-
             updateView();
         });
     }
@@ -168,13 +170,17 @@ public class MainView extends JFrame {
 //
 //			Stream.of(favoritesPanel.getComponents()).forEach(comp -> {
 //				if(comp instanceof FavoriteView) {
-//					// TODO: найти удалить нужный
+//					// TODO: найти и удалить нужный
 //					// TODO: убрать флаг
 //				}
 //			});
 
             favoritesPanel.removeAll();
-//            favoriteRepository.findAll().forEach(favorite -> favoritesPanel.add(new FavoriteView(favorite, favoriteViewController)));
+
+            favoriteRepository.findAll().forEach(favorite -> {
+                FavoriteView view = new FavoriteView(favorite, favoriteViewController);
+                favoritesPanel.add(view);
+            });
 
             contentPane.validate();
         });

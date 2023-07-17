@@ -1,7 +1,5 @@
 package moviechecker;
 
-import moviechecker.database.api.events.DataReceivedEvent;
-import moviechecker.database.api.events.DataRequestedEvent;
 import moviechecker.datasource.provider.MovieProvider;
 import moviechecker.database.episode.EpisodeEntity;
 import moviechecker.database.episode.EpisodeRepository;
@@ -11,6 +9,8 @@ import moviechecker.database.season.SeasonEntity;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteEntity;
 import moviechecker.database.site.SiteRepository;
+import moviechecker.di.events.DataReceivedEvent;
+import moviechecker.di.events.DataRequestedEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

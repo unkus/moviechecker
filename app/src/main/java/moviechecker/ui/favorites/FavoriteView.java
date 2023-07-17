@@ -28,7 +28,7 @@ public class FavoriteView extends JPanel {
 		
 		JButton openButton = new JButton("Открыть");
 		actionPanel.add(openButton);
-		openButton.addActionListener(event -> controller.onClick$Open(favorite));
+		openButton.addActionListener(event -> controller.onClick$Open(new LinkableFavorite(favorite)));
 		
 		JButton removeButton = new JButton("Забыть");
 		actionPanel.add(removeButton, BorderLayout.EAST);

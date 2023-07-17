@@ -18,4 +18,6 @@ public interface CheckerDatabase {
     void addToFavorites(Episode episode);
 
     boolean checkFavorites(Episode episode);
+
+    void markEpisodeViewed(Episode episode);
 }

@@ -2,37 +2,41 @@ package moviechecker.ui.episodes;
 
 import moviechecker.di.CheckerDatabase;
 import moviechecker.di.Episode;
+import moviechecker.di.events.EpisodeViewedEvent;
 import moviechecker.ui.ItemController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import moviechecker.database.episode.EpisodeRepository;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class EpisodeViewController extends ItemController {
 
-    private Logger logger = LoggerFactory.getLogger(EpisodeViewController.class);
+    private @Autowired CheckerDatabase database;
 
-    @Autowired
-    private ApplicationEventPublisher applicationEventPublisher;
+    private Map<Episode, EpisodeView> viewMap = new HashMap<>();
 
-    @Autowired
-    private CheckerDatabase database;
-
-    @Autowired
-    private EpisodeRepository episodes;
+    public EpisodeView getView(Episode episode) {
+        EpisodeView view = viewMap.get(episode);
+        if (view == null) {
+            switch (episode.getState()) {
+                case RELEASED, VIEWED -> view = new ReleasedEpisodeView(this);
+                default -> view = new EpisodeView(this);
+            }
+            view.bind(episode);
+            viewMap.put(episode, view);
+        }
+        return view;
+    }
 
     public void onClick$AddToFavorites(Episode episode) {
         database.addToFavorites(episode);
-//        applicationEventPublisher.publishEvent(new FavoriteAddedEvent(favorite));
     }
 
     public void onClick$RemoveFromFavorites(Episode episode) {
         database.removeFromFavorite(episode);
-//        applicationEventPublisher.publishEvent(new FavoriteRemovedEvent(favoriteOpt.get()));
     }
 
     public boolean isInFavorites(Episode episode) {
@@ -40,6 +44,7 @@ public class EpisodeViewController extends ItemController {
     }
 
     public void markViewed(Episode episode) {
+        database.markEpisodeViewed(episode);
 //        episode.setState(State.VIEWED);
 //        episodes.save(episode);
 //
@@ -58,4 +63,11 @@ public class EpisodeViewController extends ItemController {
 //        applicationEventPublisher.publishEvent(new EpisodeViewedEvent(episode));
     }
 
+    @EventListener
+    public void handleEpisodeViewed(EpisodeViewedEvent event) {
+        Episode episode = (Episode) event.getSource();
+        EpisodeView view = viewMap.get(episode);
+        view.bind(episode);
+        view.getParent().validate();
+    }
 }
