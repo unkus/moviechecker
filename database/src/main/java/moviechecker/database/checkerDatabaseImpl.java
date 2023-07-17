@@ -30,7 +30,6 @@ public class checkerDatabaseImpl implements CheckerDatabase {
     private @Autowired FavoriteRepository favoriteRepository;
 
     @Override
-    @Transactional
     public void cleanup() {
         siteRepository.findAll().forEach(site -> {
             site.getMovies().removeIf(movie -> !favoriteRepository.existsByMovie(movie));
