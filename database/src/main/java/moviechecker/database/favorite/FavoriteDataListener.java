@@ -2,9 +2,8 @@ package moviechecker.database.favorite;
 
 import jakarta.persistence.PostPersist;
 import jakarta.persistence.PostRemove;
-import jakarta.persistence.PostUpdate;
-import moviechecker.di.events.FavoriteAddedEvent;
-import moviechecker.di.events.FavoriteRemovedEvent;
+import moviechecker.core.di.events.FavoriteAddedEvent;
+import moviechecker.core.di.events.FavoriteRemovedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

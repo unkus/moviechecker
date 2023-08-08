@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.season.SeasonEntity;
 import moviechecker.database.site.SiteEntity;
-import moviechecker.di.Movie;
+import moviechecker.core.di.Movie;
 
 @Entity
 @Table(name = "movie", uniqueConstraints = @UniqueConstraint(columnNames = { "site_id", "page_id" }))

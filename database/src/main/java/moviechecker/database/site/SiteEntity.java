@@ -8,7 +8,7 @@ import java.util.Set;
 import jakarta.persistence.*;
 import moviechecker.database.converters.UriPersistanceConverter;
 import moviechecker.database.movie.MovieEntity;
-import moviechecker.di.Site;
+import moviechecker.core.di.Site;
 
 @Entity
 @Table(name = "site")

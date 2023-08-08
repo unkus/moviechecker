@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'moviechecker.lostfilm'
+group = 'moviechecker'
 version = '1.0'
 
 repositories {
@@ -13,10 +13,11 @@ repositories {
 
 dependencies {
     implementation('org.springframework:spring-context:6.0.2')
-    implementation project(path: ':data-source')
-    implementation project(path: ':database')
-    implementation project(path: ':database:di')
-    implementation project(path: ':app:di')
+    implementation project(path: ':core:di')
+    implementation project(path: ':datasource:di')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
 }
 
 test {

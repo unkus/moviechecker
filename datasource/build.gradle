@@ -1,0 +1,29 @@
+plugins {
+    id 'java-library'
+    id 'eclipse'
+}
+
+group = 'moviechecker'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation('org.springframework:spring-beans:6.0.2')
+    implementation('org.springframework:spring-context:6.0.2')
+
+    implementation project(path: ':core:di')
+    implementation project(path: ':datasource:di')
+    runtimeOnly project(path: ':lostfilm')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.1.0'
+}
+
+test {
+    useJUnitPlatform()
+}

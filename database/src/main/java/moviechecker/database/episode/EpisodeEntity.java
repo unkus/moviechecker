@@ -6,8 +6,8 @@ import java.util.Objects;
 
 import jakarta.persistence.*;
 import moviechecker.database.season.SeasonEntity;
-import moviechecker.di.Episode;
-import moviechecker.di.State;
+import moviechecker.core.di.Episode;
+import moviechecker.core.di.State;
 
 @Entity
 @Table(name = "episode", uniqueConstraints = @UniqueConstraint(columnNames = { "season_id", "number" }))

@@ -1,33 +1,32 @@
 package moviechecker.database;
 
 import moviechecker.database.episode.EpisodeEntity;
-import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.database.episode.EpisodeH2CrudRepository;
 import moviechecker.database.favorite.FavoriteEntity;
 import moviechecker.database.movie.MovieEntity;
 import moviechecker.database.movie.MovieRepository;
 import moviechecker.database.season.SeasonEntity;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteEntity;
-import moviechecker.di.CheckerDatabase;
-import moviechecker.database.favorite.FavoriteRepository;
+import moviechecker.core.di.CheckerDatabase;
+import moviechecker.database.favorite.FavoriteH2CrudRepository;
 import moviechecker.database.site.SiteRepository;
-import moviechecker.di.Episode;
-import moviechecker.di.Favorite;
-import moviechecker.di.State;
+import moviechecker.core.di.Episode;
+import moviechecker.core.di.Favorite;
+import moviechecker.core.di.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Component
 public class checkerDatabaseImpl implements CheckerDatabase {
 
-    private @Autowired EpisodeRepository episodeRepository;
+    private @Autowired EpisodeH2CrudRepository episodeRepository;
     private @Autowired SeasonRepository seasonRepository;
     private @Autowired MovieRepository movieRepository;
     private @Autowired SiteRepository siteRepository;
-    private @Autowired FavoriteRepository favoriteRepository;
+    private @Autowired FavoriteH2CrudRepository favoriteRepository;
 
     @Override
     public void cleanup() {

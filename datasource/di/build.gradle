@@ -1,0 +1,19 @@
+plugins {
+    id 'java'
+}
+
+group = 'moviechecker.datasource'
+version = 'unspecified'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation("org.springframework:spring-context:6.0.2")
+    implementation project(path: ':core:di')
+}
+
+test {
+    useJUnitPlatform()
+}

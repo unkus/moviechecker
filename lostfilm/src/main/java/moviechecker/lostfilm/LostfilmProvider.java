@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import moviechecker.database.di.DataRecord;
-import moviechecker.datasource.provider.MovieProvider;
-import moviechecker.di.State;
+import moviechecker.core.di.State;
+import moviechecker.datasource.di.DataRecord;
+import moviechecker.datasource.di.DataRecordProvider;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LostfilmProvider implements MovieProvider {
+public class LostfilmProvider implements DataRecordProvider {
 
     private static final String SITE = "https://www.lostfilmtv5.site";
 

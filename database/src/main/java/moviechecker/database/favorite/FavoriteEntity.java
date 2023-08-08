@@ -2,8 +2,8 @@ package moviechecker.database.favorite;
 
 import jakarta.persistence.*;
 import moviechecker.database.movie.MovieEntity;
-import moviechecker.di.Favorite;
-import moviechecker.di.Movie;
+import moviechecker.core.di.Favorite;
+import moviechecker.core.di.Movie;
 
 import java.net.URI;
 import java.util.Objects;

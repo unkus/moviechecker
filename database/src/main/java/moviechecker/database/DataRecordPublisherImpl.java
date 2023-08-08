@@ -1,16 +1,16 @@
 package moviechecker.database;
 
-import moviechecker.database.di.DataRecord;
-import moviechecker.database.di.DataRecordPublisher;
 import moviechecker.database.episode.EpisodeEntity;
-import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.database.episode.EpisodeH2CrudRepository;
 import moviechecker.database.movie.MovieEntity;
 import moviechecker.database.movie.MovieRepository;
 import moviechecker.database.season.SeasonEntity;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteEntity;
 import moviechecker.database.site.SiteRepository;
-import moviechecker.di.State;
+import moviechecker.core.di.State;
+import moviechecker.datasource.di.DataRecord;
+import moviechecker.datasource.di.DataRecordPublisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class DataRecordPublisherImpl implements DataRecordPublisher {
     private @Autowired SiteRepository sites;
     private @Autowired MovieRepository movies;
     private @Autowired SeasonRepository seasons;
-    private @Autowired EpisodeRepository episodes;
+    private @Autowired EpisodeH2CrudRepository episodes;
 
     @Override
     public void publishRecord(DataRecord record) {

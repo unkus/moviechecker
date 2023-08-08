@@ -4,12 +4,14 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.StreamSupport;
 
-import moviechecker.database.episode.EpisodeRepository;
+import moviechecker.core.di.EpisodeRepository;
+import moviechecker.core.di.FavoriteRepository;
+import moviechecker.database.episode.EpisodeH2CrudRepository;
 import moviechecker.database.movie.MovieRepository;
 import moviechecker.database.season.SeasonRepository;
 import moviechecker.database.site.SiteRepository;
-import moviechecker.database.favorite.FavoriteRepository;
-import moviechecker.di.Episode;
+import moviechecker.database.favorite.FavoriteH2CrudRepository;
+import moviechecker.core.di.Episode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +22,7 @@ import moviechecker.database.favorite.FavoriteEntity;
 import moviechecker.database.movie.MovieEntity;
 import moviechecker.database.season.SeasonEntity;
 import moviechecker.database.site.SiteEntity;
-import moviechecker.di.State;
+import moviechecker.core.di.State;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,22 +40,22 @@ public class MainTest {
     private EpisodeRepository episodes;
     @Autowired
     private FavoriteRepository favorites;
+    @Autowired
+    private EpisodeH2CrudRepository episodeH2CrudRepository;
+    @Autowired
+    private FavoriteH2CrudRepository favoriteH2CrudRepository;
 
     @AfterEach
     public void cleanupData() {
-        favorites.deleteAll();
+        favoriteH2CrudRepository.deleteAll();
         sites.deleteAll();
     }
 
-    @Test
-    public void findAllByStateOrderByReleaseDateAscTest() {
-        assertNotNull(episodes);
-
-        Iterable<Episode> episodesIterable = episodes.findAllByStateOrderByDateAsc(State.EXPECTED);
-        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+    private void verifyAllByStateOrderByReleaseDateAsc(Iterable<? extends Episode> episodesIterable) {
+        List<? extends Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<Episode> sortedList = actualList.stream()
+        List<? extends Episode> sortedList = actualList.stream()
                 .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> left != null ? (right != null ? left.compareTo(right) : 1) : -1))
                 .toList();
@@ -62,19 +64,47 @@ public class MainTest {
     }
 
     @Test
-    public void findAllByStateOrderByReleaseDateDescTest() {
+    public void getReleasedTest() {
         assertNotNull(episodes);
 
-        Iterable<Episode> episodesIterable = episodes.findAllByStateNotOrderByDateDesc(State.RELEASED);
-        List<Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
+        Iterable<? extends Episode> episodesIterable = episodes.getReleased();
+        verifyAllByStateOrderByReleaseDateAsc(episodesIterable);
+    }
+
+    @Test
+    public void findAllByStateOrderByReleaseDateAscTest() {
+        assertNotNull(episodeH2CrudRepository);
+
+        Iterable<? extends Episode> episodesIterable = episodeH2CrudRepository.findAllByStateOrderByDateAsc(State.EXPECTED);
+        verifyAllByStateOrderByReleaseDateAsc(episodesIterable);
+    }
+
+    private void verifyAllByStateNotOrderByDateDesc(Iterable<? extends Episode> episodesIterable) {
+        List<? extends Episode> actualList = StreamSupport.stream(episodesIterable.spliterator(), false)
                 .toList();
 
-        List<Episode> sortedList = actualList.stream()
+        List<? extends Episode> sortedList = actualList.stream()
                 .sorted(Comparator.comparing(item -> item.getReleaseDate(),
                         (left, right) -> (left != null ? (right != null ? left.compareTo(right) : 1) : -1) * -1))
                 .toList();
 
         assertEquals(sortedList, actualList, "The list of episodes is unsorted");
+    }
+
+    @Test
+    public void getExpectedTest() {
+        assertNotNull(episodes);
+
+        Iterable<? extends Episode> episodesIterable = episodes.getExpected();
+        verifyAllByStateNotOrderByDateDesc(episodesIterable);
+    }
+
+    @Test
+    public void findAllByStateOrderByReleaseDateDescTest() {
+        assertNotNull(episodeH2CrudRepository);
+
+        Iterable<? extends Episode> episodesIterable = episodeH2CrudRepository.findAllByStateNotOrderByDateDesc(State.EXPECTED);
+        verifyAllByStateNotOrderByDateDesc(episodesIterable);
     }
 
     @Test
@@ -154,7 +184,7 @@ public class MainTest {
         assertTrue(seasonOpt.isPresent(), "Expected season not found");
         SeasonEntity season = seasonOpt.get();
 
-        Optional<EpisodeEntity> episodeOpt = episodes.findBySeasonAndNumber(season, 11);
+        Optional<EpisodeEntity> episodeOpt = episodeH2CrudRepository.findBySeasonAndNumber(season, 11);
         assertTrue(episodeOpt.isPresent(), "Expected episode not found");
 
         EpisodeEntity episode = episodeOpt.get();
@@ -162,7 +192,7 @@ public class MainTest {
         assertEquals(season, episode.getSeason());
         assertEquals(movie, episode.getSeason().getMovie());
 
-        assertTrue(episodes.findBySeasonAndNumber(season, 20).isEmpty(), "Unexpected episode found");
+        assertTrue(episodeH2CrudRepository.findBySeasonAndNumber(season, 20).isEmpty(), "Unexpected episode found");
     }
 
     @Test
@@ -179,7 +209,7 @@ public class MainTest {
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
         MovieEntity movieOne = movieOpt.get();
 
-        Optional<FavoriteEntity> favoriteMovieOpt = favorites.findByMovie(movieOne);
+        Optional<FavoriteEntity> favoriteMovieOpt = favoriteH2CrudRepository.findByMovie(movieOne);
         assertTrue(favoriteMovieOpt.isPresent(), "No favorites found by movie");
 
         FavoriteEntity favorite = favoriteMovieOpt.get();
@@ -188,7 +218,7 @@ public class MainTest {
         Optional<MovieEntity> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
         assertTrue(movieThreeOpt.isPresent(), "Expected movie not found");
         MovieEntity movieThree = movieThreeOpt.get();
-        assertTrue(favorites.findByMovie(movieThree).isEmpty(), "Unexpected favorite movie found but should not");
+        assertTrue(favoriteH2CrudRepository.findByMovie(movieThree).isEmpty(), "Unexpected favorite movie found but should not");
     }
 
     @Test
@@ -205,12 +235,12 @@ public class MainTest {
         assertTrue(movieOpt.isPresent(), "Expected movie not found");
         MovieEntity movieOne = movieOpt.get();
 
-        assertTrue(favorites.existsByMovie(movieOne), "Expected favorite movie not exists");
+        assertTrue(favoriteH2CrudRepository.existsByMovie(movieOne), "Expected favorite movie not exists");
 
         Optional<MovieEntity> movieThreeOpt = movies.findBySiteAndPageId(site, "movie_three");
         assertTrue(movieThreeOpt.isPresent(), "Expected movie not found");
         MovieEntity movieThree = movieThreeOpt.get();
-        assertFalse(favorites.existsByMovie(movieThree),
+        assertFalse(favoriteH2CrudRepository.existsByMovie(movieThree),
                 "Positive result has been achieved instead of negative one");
     }
 
