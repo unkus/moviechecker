@@ -10,8 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,82 +22,116 @@ import org.springframework.stereotype.Component;
 @Component
 public class LostfilmProvider implements DataRecordProvider {
 
-    private static final String SITE = "https://www.lostfilmtv5.site";
+    private static final Pattern NEW_MOVIE_CLASS_PATTERN = Pattern.compile("<a class=\"new-movie\" href=\"(?<href>.+)/\" title=\"(?<title>.+)\">");
+    private static final Pattern TODAY_CLASS_PATTERN = Pattern.compile("<td class=\"today\">");
+    private static final Pattern EXPECTED_EPISODE_PATTERN = Pattern.compile("<a href=\"(?<href>.+)/\" class=\"title\">(?<title>.+)</br>");
+    private static final Pattern BREADCRUMBS_CLASS_PATTERN = Pattern.compile("<div class=\"breadcrumbs-pane\">");
+    private static final Pattern MOVIE_ITEM_CLASS_PATTERN = Pattern.compile("<a href=\"(?<moviePath>/series/(?<moviePageId>.+))/\" class=\"item\">(?<movieTitle>.+)</a>");
+    private static final Pattern SEASON_ITEM_CLASS_PATTERN = Pattern.compile("<a href=\"(?<seasonRef>.+)/\" class=\"item\"><div class=\"arrow\"></div>(?<seasonNumber>\\d+) сезон</a>");
+    private static final Pattern EPISODE_ITEM_CLASS_PATTERN = Pattern.compile("<a href=\"(?<episodeRef>.+)/\" class=\"item\"><div class=\"arrow\"></div>(?<episodeNumber>\\d+) серия</a>");
+    private static final Pattern SERIA_HEADER_CLASS_PATTERN = Pattern.compile("<div class=\"seria-header\">");
+    private static final Pattern THUMBS_CLASS_PATTERN = Pattern.compile("<img src=\"(?<posterRef>.+)\" class=\"thumb\" />");
+    private static final Pattern TITLE_RU_CLASS_PATTERN = Pattern.compile("<h1 class=\"title-ru\">(?<episodeTitle>.+)</h1>");
+    private static final Pattern TITLE_EN_CLASS_PATTERN = Pattern.compile("<div class=\"title-en\">(?<episodeTitle>.+)</div>");
+    private static final Pattern EXPECTED_CLASS_PATTERN = Pattern.compile("<div class=\"expected\">Ожидается (?<date>.+)</div>");
+    private static final Pattern DATE_PATTERN = Pattern.compile("<span data-proper=\".+\" data-released=\"(?<dateReleased>\\d{2} .+ \\d{4})\">.+</span>");
 
-    private static final Pattern NEW_MOVIE_TAG_PATTERN = Pattern
-            .compile("<a class=\"new-movie\" href=\"(?<episodeRef>(?<seasonRef>(?<movieRef>/series/(?<moviePageId>.+))/.+)/.+)/\" title=\"(?<title>.+)\">");
-    private static final Pattern EPISODE_TITLE_TAG_PATTERN = Pattern.compile("<div class=\"title\">");
-    private static final Pattern DATE_TAG_PATTERN = Pattern.compile("<div class=\"date\">(?<date>.+)</div>");
-    private static final Pattern IMG_TAG_PATTERN = Pattern.compile("<img src=\"(?<posterLink>.+)\" />");
-    private static final Pattern ID_PATTERN = Pattern.compile("(?<seasonNumber>\\d+) сезон (?<episodeTitle>(?<episodeNumber>\\d+) серия)");
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    private static final String SITE_ADDRESS = "https://www.lostfilmtv5.site";
 
-    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-
-    private BufferedReader createHtmlReader() throws IOException {
-        URL url = new URL(SITE);
+    private BufferedReader createHtmlReader(URL url) throws IOException {
         return new BufferedReader(new InputStreamReader(url.openStream(), StandardCharsets.UTF_8));
     }
 
     @Override
-    public List<DataRecord> retrieveData() throws Exception {
-        List<DataRecord> recordList = new LinkedList<>();
-        URI siteAddress = URI.create(SITE);
+    public Collection<DataRecord> retrieveData() throws Exception {
+        URI siteUri = URI.create(SITE_ADDRESS);
 
-        DataRecord.Builder dataRecordBuilder = new DataRecord.Builder();
-        dataRecordBuilder.site(siteAddress);
-        dataRecordBuilder.episodeState(State.RELEASED);
+        LinkedHashMap<String, DataRecord> recordList = new LinkedHashMap<>();
 
-        try (BufferedReader reader = createHtmlReader()) {
+        try (BufferedReader reader = createHtmlReader(siteUri.resolve("/schedule").toURL())) {
             String inputLine;
+
             while ((inputLine = reader.readLine()) != null) {
-                Matcher movieMatcher = NEW_MOVIE_TAG_PATTERN.matcher(inputLine);
-                if (movieMatcher.find()) {
-                    dataRecordBuilder
-                            .moviePageId(movieMatcher.group("moviePageId"))
-                            .movieTitle(movieMatcher.group("title"))
-                            .moviePath(movieMatcher.group("movieRef"))
-                            .seasonPath(movieMatcher.group("seasonRef"))
-                            .episodePath(movieMatcher.group("episodeRef"));
-                } else {
-                    continue;
-                }
+                String href = null;
+                Matcher newMovieClassMatcher = NEW_MOVIE_CLASS_PATTERN.matcher(inputLine);
+                if (newMovieClassMatcher.find()) {
+                    href = newMovieClassMatcher.group("href");
+                } else if (TODAY_CLASS_PATTERN.matcher(inputLine).find()) {
+                    reader.readLine(); // skip tag
 
-                Matcher titleMatcher = EPISODE_TITLE_TAG_PATTERN.matcher(reader.readLine());
-                if (titleMatcher.find()) {
-                    String line = reader.readLine().trim();
-                    Matcher idMatcher = ID_PATTERN.matcher(line);
-                    if(idMatcher.find()) {
-                        dataRecordBuilder
-                                .seasonNumber(Integer.parseInt(idMatcher.group("seasonNumber")))
-                                .episodeNumber(Integer.parseInt(idMatcher.group("episodeNumber")))
-                                .episodeTitle(idMatcher.group("episodeTitle"));
-                        reader.readLine(); // skip closing tag line
-                    } else {
-                        continue;
+                    Matcher entryMatcher = EXPECTED_EPISODE_PATTERN.matcher(reader.readLine());
+                    if (entryMatcher.find()) {
+                        href = entryMatcher.group("href");
                     }
-                } else {
-                    continue;
                 }
 
-                Matcher dateMatcher = DATE_TAG_PATTERN.matcher(reader.readLine());
-                if (dateMatcher.find()) {
-                    String dateString = dateMatcher.group("date");
-                    LocalDateTime date = LocalDateTime.of(LocalDate.parse(dateString, dateFormat), LocalTime.MIN);
-                    dataRecordBuilder.episodeDate(date);
-                } else {
-                    continue;
+                if (href != null) {
+                    if (href.matches(".+episode_\\d+")) {
+                        // episode
+                        recordList.put(href, getEpisodeDetails(siteUri.resolve(href).toURL()));
+                    } else {
+                        // TODO: process movie
+                    }
                 }
-
-                Matcher posterLinkMatcher = IMG_TAG_PATTERN.matcher(reader.readLine());
-                if (posterLinkMatcher.find()) {
-                    dataRecordBuilder.moviePosterLink(siteAddress.resolve(posterLinkMatcher.group("posterLink")));
-                } else {
-                    continue;
-                }
-
-                recordList.add(dataRecordBuilder.build());
             }
         }
-        return recordList;
+        return recordList.values();
+    }
+
+    private DataRecord getEpisodeDetails(URL url) throws Exception {
+        DataRecord.Builder dataRecordBuilder = new DataRecord.Builder();
+        dataRecordBuilder.site(SITE_ADDRESS);
+        dataRecordBuilder.episodeState(State.RELEASED);
+
+        try (BufferedReader reader = createHtmlReader(url)) {
+            String inputLine;
+            while ((inputLine = reader.readLine()) != null) {
+                Matcher breadcrumbsMatcher = BREADCRUMBS_CLASS_PATTERN.matcher(inputLine);
+                if (breadcrumbsMatcher.find()) {
+                    Matcher movieMatcher = MOVIE_ITEM_CLASS_PATTERN.matcher(reader.readLine());
+                    movieMatcher.find();
+                    dataRecordBuilder.moviePageId(movieMatcher.group("moviePageId"))
+                            .moviePath(movieMatcher.group("moviePath"))
+                            .movieTitle(movieMatcher.group("movieTitle"));
+
+                    reader.readLine(); // skip
+
+                    Matcher seasonMatcher = SEASON_ITEM_CLASS_PATTERN.matcher(reader.readLine());
+                    seasonMatcher.find();
+                    dataRecordBuilder.seasonPath(seasonMatcher.group("seasonRef"))
+                            .seasonNumber(Integer.parseInt(seasonMatcher.group("seasonNumber")));
+
+                    Matcher episodeMatcher = EPISODE_ITEM_CLASS_PATTERN.matcher(reader.readLine());
+                    episodeMatcher.find();
+                    dataRecordBuilder.episodePath(episodeMatcher.group("episodeRef"))
+                            .episodeNumber(Integer.parseInt(episodeMatcher.group("episodeNumber")));
+                } else if (SERIA_HEADER_CLASS_PATTERN.matcher(inputLine).find()) {
+                    Matcher posterMatcher = THUMBS_CLASS_PATTERN.matcher(reader.readLine());
+                    posterMatcher.find();
+                    dataRecordBuilder.moviePosterLink(posterMatcher.group("posterRef"));
+
+                    Matcher ruEpisodeTitleMatcher = TITLE_RU_CLASS_PATTERN.matcher(reader.readLine());
+                    ruEpisodeTitleMatcher.find();
+                    dataRecordBuilder.episodeTitle(ruEpisodeTitleMatcher.group("episodeTitle"));
+
+                    Matcher enEpisodeTitleMatcher = TITLE_EN_CLASS_PATTERN.matcher(reader.readLine());
+                    enEpisodeTitleMatcher.find();
+                    //
+                } else {
+                    Matcher expectedMatcher = EXPECTED_CLASS_PATTERN.matcher(inputLine);
+                    if (expectedMatcher.find()) {
+                        dataRecordBuilder.episodeState(State.EXPECTED);
+                    }
+                    Matcher dateMatcher = DATE_PATTERN.matcher(inputLine);
+                    if (dateMatcher.find()) {
+                        dataRecordBuilder.episodeDate(LocalDateTime.of(LocalDate.parse(dateMatcher.group("dateReleased"), dateFormat), LocalTime.MIN));
+                        return dataRecordBuilder.build();
+                    }
+                }
+            }
+        }
+
+        throw new Exception("No record produced for " + url);
     }
 }

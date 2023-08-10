@@ -1,9 +1,9 @@
 package moviechecker.datasource.di;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface DataRecordProvider {
 
-	List<DataRecord> retrieveData() throws Exception;
+	Collection<DataRecord> retrieveData() throws Exception;
 
 }

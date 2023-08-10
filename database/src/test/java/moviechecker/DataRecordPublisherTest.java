@@ -44,11 +44,11 @@ public class DataRecordPublisherTest {
         assertEquals(0, sites.count());
 
         DataRecord.Builder recordBuilder = new DataRecord.Builder();
-        recordBuilder.site(URI.create("https://test.test"))
+        recordBuilder.site("https://test.test")
                 .moviePageId("movie")
                 .movieTitle("movie")
                 .moviePath("/movie")
-                .moviePosterLink(URI.create("/poster_one.jpg"))
+                .moviePosterLink("/poster_one.jpg")
                 .seasonNumber(1)
                 .seasonPath("/movie/season")
                 .episodeNumber(1)

@@ -47,8 +47,8 @@ public record DataRecord(URI siteAddress,
         private State episodeState;
         private LocalDateTime episodeDate;
 
-        public Builder site(URI site) {
-            this.siteAddress = site;
+        public Builder site(String site) {
+            this.siteAddress = URI.create(site);
             return this;
         }
 
@@ -67,8 +67,8 @@ public record DataRecord(URI siteAddress,
             return this;
         }
 
-        public Builder moviePosterLink(URI posterLink) {
-            this.moviePosterLink = posterLink;
+        public Builder moviePosterLink(String posterLink) {
+            this.moviePosterLink = URI.create(posterLink);
             return this;
         }
 
