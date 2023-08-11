@@ -1,18 +1,21 @@
 plugins {
     id 'java'
+    
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
 group = 'moviechecker'
-version = '1.0'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation('org.springframework:spring-context:6.0.2')
+    implementation 'org.springframework:spring-context:6.0.2'
     implementation project(path: ':core:di')
     implementation project(path: ':datasource:di')
 

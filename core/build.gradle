@@ -1,8 +1,8 @@
 plugins {
 	id 'java'
-	id 'eclipse'
 	id 'application'
-	id 'maven-publish'
+	//id 'maven-publish'
+	
     id 'org.springframework.boot' version '3.1.0'
     id 'io.spring.dependency-management' version '1.1.0'
 }
@@ -34,12 +34,12 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-publishing {
-    publications {
-        app(MavenPublication) {
-            from components.java
-        }
-    }
-}
+//publishing {
+//    publications {
+//        app(MavenPublication) {
+//            from components.java
+//        }
+//    }
+//}
 
 mainClassName = 'moviechecker.CheckerMain'
